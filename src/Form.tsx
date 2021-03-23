@@ -46,11 +46,8 @@ function addToList(name: string) {
   return name + " has been added to the list";
 }
 
-function pickName() {
-  // return(
-  //   Math.floor(Math.random() * names.length)
-  // )
-  alert("The winner is : " + names[Math.floor(Math.random() * names.length)]);
-}
+// function pickName() {
+//   alert("The winner is : " + names[Math.floor(Math.random() * names.length)]);
+// }
 
 export default Form;
