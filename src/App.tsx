@@ -1,19 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import logo from "./logo.svg";
+import logo from "./upsideDownHat.png";
 import "./App.css";
 import "./Form.css";
+const listOfNames: string[] = [];
 
-const globalNames: string[] = [];
-// class HatList extends React.Component {
-//   constructor(props: any) {
-//     super(props);
-//     this.state = { globalNames };
-//   }
-//   render() {
-//     return AppContainer;
-//   }
-// }
 function App() {
   return <AppContainer />;
 }
@@ -23,38 +14,22 @@ function AppContainer() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        {Form(globalNames)}
+        <h2>Let's put some names in this hat!</h2>
+        {Form()}
       </header>
     </div>
   );
 }
 
-function addNameToList(name: string) {
-  // <BounceIn>{name}</BounceIn>;
-  console.log("Here is the name you added : ", name);
-  globalNames.push(name);
-}
-
-function Form(someNames: string[]) {
+function Form() {
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = (data: any) => {
-    addNameToList(String(data.name));
+    addNameToList(String(data.name), listOfNames);
     console.log(data);
   };
   return (
     <div>
-      {NameList(globalNames)}
+      {NameList(listOfNames)}
 
       <div className="container">
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -76,22 +51,17 @@ function Form(someNames: string[]) {
   );
 }
 
-function NameList(names: string[]) {
-  return (
-    <div>
-      <h1>{globalNames.join(", ")}</h1>
-    </div>
-  );
+function addNameToList(name: string, listOfNames: string[]) {
+  console.log("Here is the name you added : ", name);
+
+  listOfNames.push(name);
+
+  console.log("Here is the list you added : ", listOfNames);
 }
 
-// function Comment(name: string) {
-//   return (
-//     <div className="Comment">
-//       <div className="UserInfo">
-//         <div className="UserInfo-name">{name}</div>
-//       </div>
-//     </div>
-//   );
-// }
+function NameList(listOfNames: string[]) {
+  const listNames = listOfNames.map((theName) => <li>{theName}</li>);
+  return <ul>{listNames}</ul>;
+}
 
 export default App;
