@@ -6,19 +6,7 @@ import "./Form.css";
 let listOfNames: string[] = [];
 
 function App() {
-  return <AppContainer />;
-}
-
-function AppContainer() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={hat} className="App-logo" alt="logo" />
-        <h2>Let's put some names in this hat!</h2>
-        {Form()}
-      </header>
-    </div>
-  );
+  return <Form />;
 }
 
 function Form() {
@@ -40,31 +28,34 @@ function Form() {
     }
   };
   return (
-    <div>
-      {NameList(listOfNames)}
+    <div className="App">
+      <header className="App-header">
+        <h1>Let's put some names in this hat!</h1>
+        <div>
+          {NameList(listOfNames)}
 
-      <div className="container">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="row">
-            <div className="col-75">
-              <input
-                type="text"
-                name="name"
-                placeholder="Put that name in this hat"
-                ref={register}
-              />
-              <input type="submit"></input>
-              {errors.exampleRequired && <p>This field is required</p>}
-              <button type="reset" onClick={onClick}>
-                CLEAR
-              </button>
-            </div>
+          <div className="container">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="row">
+                <div className="col-75">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Put that name in this hat"
+                    ref={register}
+                  />
+                  <input type="submit"></input>
+                  {errors.exampleRequired && <p>This field is required</p>}
+                  <button type="reset" onClick={onClick}>
+                    CLEAR
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
-          <button type="button" onClick={onDraw}>
-            DRAW A NAME
-          </button>
-        </form>
-      </div>
+        </div>
+        <img src={hat} className="Hat" alt="logo" onClick={onDraw} />
+      </header>
     </div>
   );
 }
