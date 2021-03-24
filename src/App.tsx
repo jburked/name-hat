@@ -45,13 +45,14 @@ function Form() {
                 placeholder="Put that name in this hat"
                 ref={register}
               />
+              <input type="submit"></input>
               {errors.exampleRequired && <p>This field is required</p>}
+              <button type="reset" onClick={onClick}>
+                CLEAR
+              </button>
             </div>
           </div>
-          <div>
-            <input type="clear" onClick={onClick} />
-            <input type="submit" />
-          </div>
+          <div className="col"></div>
         </form>
       </div>
     </div>
