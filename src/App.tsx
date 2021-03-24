@@ -31,6 +31,14 @@ function Form() {
     listOfNames = [];
     console.log("No name in the hate : ", listOfNames);
   };
+
+  const onDraw = () => {
+    if (listOfNames.length > 1) {
+      alert(listOfNames[Math.floor(Math.random() * listOfNames.length)]);
+    } else {
+      alert("We need some names in the hat first!");
+    }
+  };
   return (
     <div>
       {NameList(listOfNames)}
@@ -52,7 +60,9 @@ function Form() {
               </button>
             </div>
           </div>
-          <div className="col"></div>
+          <button type="button" onClick={onDraw}>
+            DRAW A NAME
+          </button>
         </form>
       </div>
     </div>
@@ -70,14 +80,6 @@ function addNameToList(name: string, listOfNames: string[]) {
 function NameList(listOfNames: string[]) {
   const listNames = listOfNames.map((theName) => <li>{theName}</li>);
   return <ul>{listNames}</ul>;
-}
-
-function pickName() {
-  console.log(
-    "Here is the name " +
-      listOfNames[Math.floor(Math.random() * listOfNames.length)]
-  );
-  //   return Math.floor(Math.random() * names.length);
 }
 
 export default App;
