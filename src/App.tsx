@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import hat from "./upsideDownHat.png";
 import "./App.css";
@@ -11,6 +11,9 @@ function App() {
 
 function Form() {
   const { register, handleSubmit, errors } = useForm();
+  var initialList: string[] = [];
+  var draw = false;
+  const [list, setList] = useState(initialList);
   const onSubmit = (data: any) => {
     addNameToList(String(data.name), listOfNames);
     console.log(data);
@@ -22,17 +25,23 @@ function Form() {
 
   const onDraw = () => {
     if (listOfNames.length > 1) {
+      draw = true;
       alert(listOfNames[Math.floor(Math.random() * listOfNames.length)]);
     } else {
       alert("We need some names in the hat first!");
     }
+  };
+
+  const nameList = () => {
+    const listNames = initialList.map((theName) => <li>{theName}</li>);
+    return <ul>{listNames}</ul>;
   };
   return (
     <div className="App">
       <header className="App-header">
         <h1>Let's put some names in this hat!</h1>
         <div>
-          {NameList(listOfNames)}
+          {nameList}
 
           <div className="container">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -54,7 +63,11 @@ function Form() {
             </form>
           </div>
         </div>
-        <img src={hat} className="Hat" alt="logo" onClick={onDraw} />
+        <div className="Hat-box">
+          <div className="Hat-box-inner">
+            {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
+          </div>
+        </div>
       </header>
     </div>
   );
@@ -66,11 +79,6 @@ function addNameToList(name: string, listOfNames: string[]) {
   listOfNames.push(name);
 
   console.log("Here is the list you added : ", listOfNames);
-}
-
-function NameList(listOfNames: string[]) {
-  const listNames = listOfNames.map((theName) => <li>{theName}</li>);
-  return <ul>{listNames}</ul>;
 }
 
 export default App;

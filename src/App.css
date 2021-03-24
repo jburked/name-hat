@@ -24,12 +24,55 @@
   color: #61dafb;
 }
 
+.Hat-box {
+  background-color: transparent;
+}
+
+/* This container is needed to position the front and back side */
+.Hat-box-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.hat-box .Hat-box-inner {
+  transform: rotateX(180deg);
+}
+
+/* Position the front and back side */
+.Hat-box-front,
+.Hat-box-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.Hat-box-front {
+  background-color: #bbb;
+  color: black;
+}
+
+/* Style the back side */
+.Hat-box-back {
+  background-color: dodgerblue;
+  color: white;
+  transform: rotateX(180deg);
+}
+
 .Hat:hover {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 0.5s;
 
   /* When the animation is finished, start again */
   animation-iteration-count: infinite;
+  transform: rotateX(180deg);
 }
 
 @keyframes shake {
