@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import hat from "./upsideDownHat.png";
 import "./App.css";
@@ -6,23 +6,13 @@ import "./Form.css";
 let listOfNames: string[] = [];
 
 function App() {
-  return <AppContainer />;
-}
-
-function AppContainer() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={hat} className="App-logo" alt="logo" />
-        <h2>Let's put some names in this hat!</h2>
-        {Form()}
-      </header>
-    </div>
-  );
+  return <Form />;
 }
 
 function Form() {
   const { register, handleSubmit, errors } = useForm();
+  var initialList: string[] = [];
+
   const onSubmit = (data: any) => {
     addNameToList(String(data.name), listOfNames);
     console.log(data);
@@ -39,32 +29,44 @@ function Form() {
       alert("We need some names in the hat first!");
     }
   };
-  return (
-    <div>
-      {NameList(listOfNames)}
 
-      <div className="container">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="row">
-            <div className="col-75">
-              <input
-                type="text"
-                name="name"
-                placeholder="Put that name in this hat"
-                ref={register}
-              />
-              <input type="submit"></input>
-              {errors.exampleRequired && <p>This field is required</p>}
-              <button type="reset" onClick={onClick}>
-                CLEAR
-              </button>
-            </div>
+  const nameList = () => {
+    const listNames = initialList.map((theName) => <li>{theName}</li>);
+    return <ul>{listNames}</ul>;
+  };
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>Let's put some names in this hat!</h1>
+        <div>
+          {nameList}
+
+          <div className="container">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="row">
+                <div className="col-75">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Put that name in this hat"
+                    ref={register}
+                  />
+                  <input type="submit"></input>
+                  {errors.exampleRequired && <p>This field is required</p>}
+                  <button type="reset" onClick={onClick}>
+                    CLEAR
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
-          <button type="button" onClick={onDraw}>
-            DRAW A NAME
-          </button>
-        </form>
-      </div>
+        </div>
+        <div className="Hat-box">
+          <div className="Hat-box-inner">
+            {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
+          </div>
+        </div>
+      </header>
     </div>
   );
 }
@@ -75,11 +77,6 @@ function addNameToList(name: string, listOfNames: string[]) {
   listOfNames.push(name);
 
   console.log("Here is the list you added : ", listOfNames);
-}
-
-function NameList(listOfNames: string[]) {
-  const listNames = listOfNames.map((theName) => <li>{theName}</li>);
-  return <ul>{listNames}</ul>;
 }
 
 export default App;
