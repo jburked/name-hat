@@ -12,8 +12,7 @@ function App() {
 function Form() {
   const { register, handleSubmit, errors } = useForm();
   var initialList: string[] = [];
-  var draw = false;
-  const [list, setList] = useState(initialList);
+
   const onSubmit = (data: any) => {
     addNameToList(String(data.name), listOfNames);
     console.log(data);
@@ -25,7 +24,6 @@ function Form() {
 
   const onDraw = () => {
     if (listOfNames.length > 1) {
-      draw = true;
       alert(listOfNames[Math.floor(Math.random() * listOfNames.length)]);
     } else {
       alert("We need some names in the hat first!");
