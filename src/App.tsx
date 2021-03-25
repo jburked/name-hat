@@ -9,59 +9,58 @@ function App() {
 }
 
 class Form extends Component {
-  state: { nameList?: string[]; name?: string } = { nameList: [], name: "" };
+  state: { nameList: string[]; name: string } = { nameList: [], name: "" };
   // const initialList: string[] = [];
   names = this.state.nameList;
 
-  onSubmit = (n: string) => {
+  handleChange = (n: string) => {
     this.setState({ name: n });
+    console.log("Here is a name ", this.state.name);
+  };
+
+  onSubmit = (n: string) => {
+    console.log("Here is the name you want in the hat ", this.state.name);
+    this.names?.push(n);
+    console.log("Here is a list of names ", this.state.nameList);
   };
 
   onClear = () => {
-    this.setState({ names: [] });
+    this.setState({ nameList: [] });
   };
 
   onDraw = () => {
-    if (this.names && this.names.length > 1) {
-      alert(this.names[Math.floor(Math.random() * this.names.length)]);
+    if (this.state.nameList && this.state.nameList.length > 1) {
+      alert(
+        this.state.nameList[
+          Math.floor(Math.random() * this.state.nameList.length)
+        ]
+      );
     } else {
       alert("We need some names in the hat first!");
     }
   };
 
-  // const nameList = () => {
-  //   const listNames = initialList.map((theName) => <li>{theName}</li>);
-  //   return <ul>{listNames}</ul>;
-  // };
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <h1>Let's put some names in this hat!</h1>
           <div>
-            {this.names}
+            {this.state.nameList}
 
             <div className="container">
-              <form
-                onSubmit={(event: React.SyntheticEvent) => {
-                  const target = event.target as typeof event.target & {
-                    name: { value: string };
-                  };
-                  const name = target.name.value;
-                  this.onSubmit(name);
-                }}
-              >
+              <form>
                 <div className="row">
                   <div className="col-75">
                     <input
                       type="name"
                       name="name"
                       placeholder="Put that name in this hat"
-                      value={this.state.name}
-                      onSubmit={(
-                        e: React.FormEvent<HTMLInputElement>
-                      ): void => {
-                        this.setState({ name: e.currentTarget.value });
+                      onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                        this.handleChange(e.currentTarget.value)
+                      }
+                      onSubmit={(e: React.FormEvent<HTMLInputElement>) => {
+                        this.onSubmit(e.currentTarget.value);
                       }}
                     />
                     <input type="submit"></input>
