@@ -1,94 +1,72 @@
-import React, { Component } from "react";
+import React, { useState, Component } from "react";
 
 import hat from "./upsideDownHat.png";
 import "./App.css";
 import "./Form.css";
 
 function App() {
-  return <Form />;
+  return Form();
 }
 
-class Form extends Component {
-  state: { nameList: string[]; name: string } = { nameList: [], name: "" };
-  // const initialList: string[] = [];
-  names = this.state.nameList;
+function Form() {
+  const [name, setName] = useState("");
+  const initialList: string[] = [];
+  const [list, setList] = useState(initialList);
 
-  handleChange = (n: string) => {
-    this.setState({ name: n });
-    console.log("Here is a name ", this.state.name);
+  // handleChange = (n: string) => {
+  //   this.setState({ name: n });
+  //   console.log("Here is a name ", this.state.name);
+  // };
+
+  const onSubmit = (n: string) => {
+    console.log("Here is the name you want in the hat ", n);
+    const newList = list.concat(n);
+    setList(newList);
+    console.log("Here is a list of names ", list);
+    setName("");
   };
 
-  onSubmit = (n: string) => {
-    console.log("Here is the name you want in the hat ", this.state.name);
-    this.names?.push(n);
-    console.log("Here is a list of names ", this.state.nameList);
+  const onClear = (): void => {
+    setList([]);
   };
 
-  onClear = () => {
-    this.setState({ nameList: [] });
-  };
-
-  onDraw = () => {
-    if (this.state.nameList && this.state.nameList.length > 1) {
-      alert(
-        this.state.nameList[
-          Math.floor(Math.random() * this.state.nameList.length)
-        ]
-      );
+  const onDraw = () => {
+    if (list && list.length > 1) {
+      alert(list[Math.floor(Math.random() * list.length)]);
     } else {
       alert("We need some names in the hat first!");
     }
   };
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1>Let's put some names in this hat!</h1>
-          <div>
-            {this.state.nameList}
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>Let's put some names in this hat!</h1>
+        <div>
+          {list.map}
 
-            <div className="container">
-              <form>
-                <div className="row">
-                  <div className="col-75">
-                    <input
-                      type="name"
-                      name="name"
-                      placeholder="Put that name in this hat"
-                      onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                        this.handleChange(e.currentTarget.value)
-                      }
-                      onSubmit={(e: React.FormEvent<HTMLInputElement>) => {
-                        this.onSubmit(e.currentTarget.value);
-                      }}
-                    />
-                    <input type="submit"></input>
-
-                    <button type="reset" onClick={this.onClear}>
-                      CLEAR
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div className="Hat-box">
-            <div className="Hat-box-inner">
-              {
-                <img
-                  src={hat}
-                  className="Hat"
-                  alt="logo"
-                  onClick={this.onDraw}
+          <form onSubmit={(e) => onSubmit(e.currentTarget.value)}>
+            <div className="row">
+              <div className="col-75">
+                <input
+                  type="name"
+                  value={name}
+                  placeholder="Put that name in this hat"
+                  onChange={(e) => setName(e.currentTarget.value)}
                 />
-              }
+                <input type="submit"></input>
+              </div>
             </div>
+          </form>
+        </div>
+        <div className="Hat-box">
+          <div className="Hat-box-inner">
+            {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
           </div>
-        </header>
-      </div>
-    );
-  }
+        </div>
+      </header>
+    </div>
+  );
 }
 
 export default App;
