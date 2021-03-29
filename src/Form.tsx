@@ -2,22 +2,17 @@ import React, { useState } from "react";
 import hat from "./upsideDownHat.png";
 import "./Form.css";
 
+const n: string = "";
+const nList: string[] = [];
+
 const Form = () => {
-  const [name, setName] = useState("");
-  const [list, setList] = useState<string[]>([]);
+  const [name, setName] = useState(n);
+  const [list, setList] = useState(nList);
 
   // handleChange = (n: string) => {
   //   this.setState({ name: n });
   //   console.log("Here is a name ", this.state.name);
   // };
-
-  const onSubmit = (n: string) => {
-    console.log("Here is the name you want in the hat ", n);
-    const newList = list.concat(n);
-    setList(newList);
-    console.log("Here is a list of names ", list);
-    setName("");
-  };
 
   const onClear = (): void => {
     setList([]);
@@ -32,7 +27,13 @@ const Form = () => {
   };
 
   return (
-    <form onSubmit={(e) => onSubmit(e.currentTarget.value)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        list.push(name);
+        setName("");
+      }}
+    >
       <div className="row">
         <div className="col-75">
           <input
@@ -42,6 +43,11 @@ const Form = () => {
             onChange={(e) => setName(e.currentTarget.value)}
           />
           <input type="submit"></input>
+        </div>
+      </div>
+      <div className="Hat-box">
+        <div className="Hat-box-inner">
+          {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
         </div>
       </div>
     </form>
