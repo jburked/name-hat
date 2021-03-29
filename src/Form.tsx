@@ -9,15 +9,6 @@ const Form = () => {
   const [name, setName] = useState(n);
   const [list, setList] = useState(nList);
 
-  // handleChange = (n: string) => {
-  //   this.setState({ name: n });
-  //   console.log("Here is a name ", this.state.name);
-  // };
-
-  const onClear = (): void => {
-    setList([]);
-  };
-
   const onDraw = () => {
     if (list && list.length > 1) {
       alert(list[Math.floor(Math.random() * list.length)]);
@@ -45,11 +36,21 @@ const Form = () => {
           <input type="submit"></input>
         </div>
       </div>
+      <div>
+        <ul>
+          {list.map((name) => (
+            <li key={name}>{name}</li>
+          ))}
+        </ul>
+      </div>
       <div className="Hat-box">
         <div className="Hat-box-inner">
           {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
         </div>
       </div>
+      <button type="reset" onClick={() => setList([])}>
+        CLEAR
+      </button>
     </form>
   );
 };
