@@ -66,8 +66,11 @@ input[type="clear"]:hover {
   background-color: red;
 }
 
-.container {
-  display: inline;
+.List-container {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 /* Clear floats after the columns */
@@ -81,7 +84,7 @@ input[type="clear"]:hover {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+
   align-content: center;
 }
 
