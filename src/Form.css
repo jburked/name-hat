@@ -6,7 +6,7 @@ input[type="text"],
 select,
 textarea {
   width: 100%;
-  padding: 12px;
+  padding: 12px 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: vertical;
@@ -60,6 +60,9 @@ input[type="clear"] {
 
 input[type="submit"]:hover {
   background-color: #45a049;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
 }
 
 input[type="clear"]:hover {
@@ -74,17 +77,16 @@ input[type="clear"]:hover {
 }
 
 /* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
+.col-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .col-75 {
   display: flex;
   flex-direction: row;
   justify-content: center;
-
+  margin-bottom: 12px;
   align-content: center;
 }
 
@@ -100,4 +102,112 @@ input[type="clear"]:hover {
     width: 100%;
     margin-top: 0;
   }
+}
+
+.Hat-box {
+  background-color: transparent;
+}
+
+/* This container is needed to position the front and back side */
+.Hat-box-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.hat-box .Hat-box-inner {
+  transform: rotateX(180deg);
+}
+
+/* Position the front and back side */
+.Hat-box-front,
+.Hat-box-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.Hat-box-front {
+  background-color: #bbb;
+  color: black;
+}
+
+/* Style the back side */
+.Hat-box-back {
+  background-color: dodgerblue;
+  color: white;
+  transform: rotateX(180deg);
+}
+
+.Hat:hover {
+  /* Start the shake animation and make the animation last for 0.5 seconds */
+  animation: shake 0.25s;
+
+  /* When the animation is finished, start again */
+  animation-iteration-count: infinite;
+  transform: rotateX(180deg);
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-4px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(4px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-4px, -4px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+
+.Animated {
+  display: inline-block;
+  border-radius: 4px;
+  border: none;
+  text-align: center;
+  /* font-size: 28px;
+  padding: 20px;
+  width: 200px; */
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.name span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+  font-size: 25px;
 }

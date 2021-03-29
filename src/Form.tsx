@@ -12,6 +12,7 @@ const Form = () => {
   const onDraw = () => {
     if (list && list.length > 1) {
       alert(list[Math.floor(Math.random() * list.length)]);
+      setList([]);
     } else {
       alert("We need some names in the hat first!");
     }
@@ -25,14 +26,16 @@ const Form = () => {
         setName("");
       }}
     >
-      <div className="row">
+      <div className="col-container">
         <div className="col-75">
           <input
             type="name"
             value={name}
-            placeholder="Put that name in this hat"
+            placeholder="Put that name in this hat  "
             onChange={(e) => setName(e.currentTarget.value)}
           />
+        </div>
+        <div className="col-75">
           <input type="submit"></input>
           <button type="reset" onClick={() => setList([])}>
             CLEAR
@@ -43,8 +46,11 @@ const Form = () => {
         <ul className="List-container">
           {list.map((name) => (
             <li key={name}>
-              <button onClick={() => setList(list.filter((n) => n !== name))}>
-                {name}
+              <button
+                className="name"
+                onClick={() => setList(list.filter((n) => n !== name))}
+              >
+                <span>{name}</span>
               </button>
             </li>
           ))}
