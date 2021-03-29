@@ -34,12 +34,19 @@ const Form = () => {
             onChange={(e) => setName(e.currentTarget.value)}
           />
           <input type="submit"></input>
+          <button type="reset" onClick={() => setList([])}>
+            CLEAR
+          </button>
         </div>
       </div>
       <div>
-        <ul>
+        <ul className="List-container">
           {list.map((name) => (
-            <li key={name}>{name}</li>
+            <li key={name}>
+              <button onClick={() => setList(list.filter((n) => n !== name))}>
+                {name}
+              </button>
+            </li>
           ))}
         </ul>
       </div>
@@ -48,9 +55,6 @@ const Form = () => {
           {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
         </div>
       </div>
-      <button type="reset" onClick={() => setList([])}>
-        CLEAR
-      </button>
     </form>
   );
 };
