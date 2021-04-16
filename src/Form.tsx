@@ -2,19 +2,43 @@ import React, { useState } from "react";
 import hat from "./upsideDownHat.png";
 import "./Form.css";
 
-const n: string = "";
-const nList: string[] = [];
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+
+const style = { justifyContent: "center" };
 
 const Form = () => {
-  const [name, setName] = useState(n);
-  const [list, setList] = useState(nList);
+  const [name, setName] = useState("");
+  const [chosenOne, setChosenOne] = useState("");
+  const [list, setList] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const onDraw = () => {
-    if (list && list.length > 1) {
-      alert(list[Math.floor(Math.random() * list.length)]);
+    if (list && list.length > 2) {
+      setChosenOne(list[Math.floor(Math.random() * list.length)]);
+      setTitle("THE HAT HAS DECIDED");
+      handleClickOpen();
       setList([]);
+    } else if (list && list.length === 2) {
+      setTitle("Why don't you flip a coin?");
+      handleClickOpen();
     } else {
-      alert("We need some names in the hat first!");
+      setChosenOne("We need some names in the hat first!");
+      setTitle("HOW DARE YOU!");
+      handleClickOpen();
     }
   };
 
@@ -22,8 +46,14 @@ const Form = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        list.push(name);
-        setName("");
+        if (list.includes(name)) {
+          setTitle("Check your list");
+          setChosenOne(name + " is already in the hat");
+          handleClickOpen();
+        } else {
+          setList(list.concat(name));
+          setName("");
+        }
       }}
     >
       <div className="col-container">
@@ -60,6 +90,30 @@ const Form = () => {
         <div className="Hat-box-inner">
           {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
         </div>
+      </div>
+
+      <div>
+        {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+          Open alert dialog
+        </Button> */}
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogContent style={style}>
+            <DialogContentText id="alert-dialog-description">
+              {chosenOne}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions style={style}>
+            <Button onClick={handleClose} color="primary" autoFocus>
+              DO IT AGAIN!
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </form>
   );
