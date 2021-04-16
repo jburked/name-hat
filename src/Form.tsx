@@ -17,6 +17,7 @@ const Form = () => {
   const [list, setList] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [buttonWords, setButtonWords] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -30,14 +31,17 @@ const Form = () => {
     if (list && list.length > 2) {
       setChosenOne(list[Math.floor(Math.random() * list.length)]);
       setTitle("THE HAT HAS DECIDED");
+      setButtonWords("DO IT AGAIN!");
       handleClickOpen();
       setList([]);
     } else if (list && list.length === 2) {
-      setTitle("Why don't you flip a coin?");
+      setTitle("Why don't you flip a coin instead?");
+      setButtonWords("You kidding me right now?!");
       handleClickOpen();
     } else {
       setChosenOne("We need some names in the hat first!");
       setTitle("HOW DARE YOU!");
+      setButtonWords("Try again.");
       handleClickOpen();
     }
   };
@@ -49,6 +53,12 @@ const Form = () => {
         if (list.includes(name)) {
           setTitle("Check your list");
           setChosenOne(name + " is already in the hat");
+          setButtonWords("We all make mistakes.");
+          handleClickOpen();
+        } else if (!name) {
+          setTitle("Check your input");
+          setChosenOne("You can't put nothing in this hat.");
+          setButtonWords("We all make mistakes.");
           handleClickOpen();
         } else {
           setList(list.concat(name));
@@ -110,7 +120,7 @@ const Form = () => {
           </DialogContent>
           <DialogActions style={style}>
             <Button onClick={handleClose} color="primary" autoFocus>
-              DO IT AGAIN!
+              {buttonWords}
             </Button>
           </DialogActions>
         </Dialog>
