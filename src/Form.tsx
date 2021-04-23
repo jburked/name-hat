@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Cookie from "universal-cookie";
 import hat from "./upsideDownHat.png";
 import "./Form.css";
 
@@ -22,23 +23,21 @@ const Form = () => {
   const [buttonWords, setButtonWords] = useState("");
 
   useEffect(() => {
-    setOpenThree(true);
+    const cookies = new Cookie();
+    if (cookies.get("toolTip") === "no") {
+      setOpenThree(false);
+    } else {
+      cookies.set("toolTip", "no", { path: "/" });
+      setOpenThree(true);
+    }
   }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleClickOpenTwo = () => {
-    setOpenTwo(true);
   };
 
   const handleCloseTwo = () => {
@@ -183,7 +182,7 @@ const Form = () => {
                 Here is how Picky Hat works:
                 <ol>
                   <li>
-                    Add some things to Picky Hat. Names, restuaurants, games,
+                    Add some things to Picky Hat. Names, restaurants, games,
                     etc...
                   </li>
                   <li>Hover over Picky Hat to shake it up.</li>
