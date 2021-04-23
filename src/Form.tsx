@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import hat from "./upsideDownHat.png";
 import "./Form.css";
-import "./Coin.css";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -9,7 +8,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { TextField } from "@material-ui/core";
 
 const style = { justifyContent: "center" };
 
@@ -19,10 +17,19 @@ const Form = () => {
   const [list, setList] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [openTwo, setOpenTwo] = useState(false);
+  const [openThree, setOpenThree] = useState(false);
   const [title, setTitle] = useState("");
   const [buttonWords, setButtonWords] = useState("");
 
+  useEffect(() => {
+    setOpenThree(true);
+  }, []);
+
   const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleOpen = () => {
     setOpen(true);
   };
 
@@ -38,18 +45,17 @@ const Form = () => {
     setOpenTwo(false);
   };
 
+  const handleCloseThree = () => {
+    setOpenThree(false);
+  };
+
   const onDraw = () => {
-    if (list && list.length > 2) {
+    if (list && list.length >= 2) {
       setChosenOne(list[Math.floor(Math.random() * list.length)]);
       setTitle("THE HAT HAS DECIDED");
       setButtonWords("DO IT AGAIN!");
       handleClickOpen();
       setList([]);
-    } else if (list && list.length === 2) {
-      setChosenOne(":|");
-      setTitle("Why don't you flip a coin instead?");
-      setButtonWords("Dogecoin?");
-      handleClickOpenTwo();
     } else {
       setChosenOne("Hat can't pick from nothing");
       setTitle("...");
@@ -99,13 +105,6 @@ const Form = () => {
             Empty the Hat.
           </button>
         </div>
-      </div>
-      <span className="tip">
-        Hover over the Hat to shake it up.
-        <br />
-        Click the Hat and it will pick the very best choice
-      </span>
-      <div>
         <ul className="List-container">
           {list.map((name) => (
             <li key={name}>
@@ -158,28 +157,48 @@ const Form = () => {
             <DialogContentText id="alert-dialog-description">
               {chosenOne}
             </DialogContentText>
-            {/* <div id="coin">
-              <div className="side-a">
-                <h2>{list[0]}</h2>
-              </div>
-              <div className="side-b">
-                <h2>{list[1]}</h2>
-              </div>
-
-              <h1>Flip a coin</h1>
-              <button
-                id="btn"
-                onClick={() => {
-                  alert("do a thing");
-                }}
-              >
-                Coin Toss
-              </button>
-            </div> */}
+            <div id="coin"></div>
+            <div id="button">Toss a coin</div>
           </DialogContent>
           <DialogActions style={style}>
             <Button onClick={handleCloseTwo} color="primary" autoFocus>
               {buttonWords}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      <div>
+        <Dialog
+          open={openThree}
+          onClose={handleCloseThree}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Welcome to Picky Hat!"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div>
+                Here is how Picky Hat works:
+                <ol>
+                  <li>
+                    Add some things to Picky Hat. Names, restuaurants, games,
+                    etc...
+                  </li>
+                  <li>Hover over Picky Hat to shake it up.</li>
+                  <li>Click Picky Hat and it will pick the very best choice</li>
+                  <li>"Empty the Hat" to clear the hats contents.</li>
+                  <li>
+                    To remove an item individually, simply click on that item.
+                  </li>
+                </ol>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseThree} color="primary" autoFocus>
+              Got it!
             </Button>
           </DialogActions>
         </Dialog>

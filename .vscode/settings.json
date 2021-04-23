@@ -1,4 +1,5 @@
 {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "eslint.alwaysShowStatus": true
+    "eslint.alwaysShowStatus": true,
+    "git.ignoreLimitWarning": true
 }
