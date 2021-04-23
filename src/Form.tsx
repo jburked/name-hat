@@ -9,6 +9,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { TextField } from "@material-ui/core";
 
 const style = { justifyContent: "center" };
 
@@ -20,7 +21,6 @@ const Form = () => {
   const [openTwo, setOpenTwo] = useState(false);
   const [title, setTitle] = useState("");
   const [buttonWords, setButtonWords] = useState("");
-  const [coinResult, setCoinResult] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -46,9 +46,9 @@ const Form = () => {
       handleClickOpen();
       setList([]);
     } else if (list && list.length === 2) {
-      // setChosenOne(":|");
+      setChosenOne(":|");
       setTitle("Why don't you flip a coin instead?");
-      setButtonWords("Flip a coin?");
+      setButtonWords("Dogecoin?");
       handleClickOpenTwo();
     } else {
       setChosenOne("Hat can't pick from nothing");
@@ -77,24 +77,34 @@ const Form = () => {
           setList(list.concat(name));
           setName("");
         }
+        e.currentTarget.autofocus = true;
       }}
     >
-      <div className="col-container">
-        <div className="col-75">
+      <div className="mainContainer">
+        <div className="row">
           <input
+            autoFocus
             type="name"
+            className="inputText"
             value={name}
             placeholder="Hat knows best "
-            onChange={(e) => setName(e.currentTarget.value)}
+            onChange={(e) => {
+              setName(e.currentTarget.value);
+            }}
           />
         </div>
-        <div className="col-75">
-          <input type="submit"></input>
+        <div>
+          <button type="submit">Add it to the Hat</button>
           <button type="reset" onClick={() => setList([])}>
-            CLEAR
+            Empty the Hat.
           </button>
         </div>
       </div>
+      <span className="tip">
+        Hover over the Hat to shake it up.
+        <br />
+        Click the Hat and it will pick the very best choice
+      </span>
       <div>
         <ul className="List-container">
           {list.map((name) => (
