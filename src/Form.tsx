@@ -46,23 +46,18 @@ const Form = () => {
       setOpenThree(true);
     }
   }, []);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleCloseTwo = () => {
     setOpenTwo(false);
   };
-
   const handleCloseThree = () => {
     setOpenThree(false);
   };
-
   const onDraw = () => {
     if (list && list.length >= 2) {
       setChosenOne(list[Math.floor(Math.random() * list.length)]);
