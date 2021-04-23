@@ -100,6 +100,11 @@ const Form = () => {
           </button>
         </div>
       </div>
+      <span className="tip">
+        Hover over the Hat to shake it up.
+        <br />
+        Click the Hat and it will pick the very best choice
+      </span>
       <div>
         <ul className="List-container">
           {list.map((name) => (
@@ -114,11 +119,6 @@ const Form = () => {
           ))}
         </ul>
       </div>
-      <span className="tip">
-        Hover over the Hat to shake it up.
-        <br />
-        Click the Hat and it will pick the very best choice
-      </span>
       <div className="Hat-box">
         <div className="Hat-box-inner">
           {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
