@@ -46,9 +46,9 @@ const Form = () => {
       handleClickOpen();
       setList([]);
     } else if (list && list.length === 2) {
-      setChosenOne(":|");
+      // setChosenOne(":|");
       setTitle("Why don't you flip a coin instead?");
-      setButtonWords("Dogecoin?");
+      setButtonWords("Flip a coin?");
       handleClickOpenTwo();
     } else {
       setChosenOne("Hat can't pick from nothing");
