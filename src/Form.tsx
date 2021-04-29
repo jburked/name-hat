@@ -166,8 +166,11 @@ const Form = () => {
             <DialogContentText id="alert-dialog-description">
               {chosenOne}
             </DialogContentText>
-            <div id="coin"></div>
-            <div id="button">Toss a coin</div>
+            <div id="coin">
+              <div className="side-a"></div>
+              <div className="side-b"></div>
+            </div>
+            <h1>Click on coin to flip</h1>
           </DialogContent>
           <DialogActions style={style}>
             <Button onClick={handleCloseTwo} color="primary" autoFocus>
@@ -190,7 +193,7 @@ const Form = () => {
             <DialogContentText id="alert-dialog-description">
               <div>
                 Here is how Picky Hat works:
-                <ol>
+                <ul>
                   <li>
                     Add some things to Picky Hat. Names, restaurants, games,
                     etc...
@@ -201,7 +204,7 @@ const Form = () => {
                   <li>
                     To remove an item individually, simply click on that item.
                   </li>
-                </ol>
+                </ul>
               </div>
             </DialogContentText>
           </DialogContent>
