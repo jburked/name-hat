@@ -199,7 +199,18 @@ const Form = () => {
                     etc...
                   </li>
                   <li>Hover over Picky Hat to shake it up.</li>
-                  <li>Click Picky Hat and it will pick the very best choice</li>
+                  <li>
+                    Click Picky Hat and it will pick the{" "}
+                    <span
+                      style={{
+                        textDecoration: "underline",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      very best
+                    </span>{" "}
+                    choice
+                  </li>
                   <li>"Empty the Hat" to clear the hats contents.</li>
                   <li>
                     To remove an item individually, simply click on that item.
