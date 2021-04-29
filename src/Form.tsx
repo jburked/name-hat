@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import Cookie from "universal-cookie";
 import hat from "./upsideDownHat.png";
 import "./Form.css";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,10 +10,24 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Fab from "@material-ui/core/Fab";
+import HelpIcon from "@material-ui/icons/Help";
 
 const style = { justifyContent: "center" };
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
+}));
+
 const Form = () => {
+  const classes = useStyles();
   const [name, setName] = useState("");
   const [chosenOne, setChosenOne] = useState("");
   const [list, setList] = useState<string[]>([]);
@@ -22,33 +38,26 @@ const Form = () => {
   const [buttonWords, setButtonWords] = useState("");
 
   useEffect(() => {
-    setOpenThree(true);
+    const cookies = new Cookie();
+    if (cookies.get("toolTip") === "no") {
+      setOpenThree(false);
+    } else {
+      cookies.set("toolTip", "no", { path: "/" });
+      setOpenThree(true);
+    }
   }, []);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleClickOpenTwo = () => {
-    setOpenTwo(true);
-  };
-
   const handleCloseTwo = () => {
     setOpenTwo(false);
   };
-
   const handleCloseThree = () => {
     setOpenThree(false);
   };
-
   const onDraw = () => {
     if (list && list.length >= 2) {
       setChosenOne(list[Math.floor(Math.random() * list.length)]);
@@ -157,8 +166,11 @@ const Form = () => {
             <DialogContentText id="alert-dialog-description">
               {chosenOne}
             </DialogContentText>
-            <div id="coin"></div>
-            <div id="button">Toss a coin</div>
+            <div id="coin">
+              <div className="side-a"></div>
+              <div className="side-b"></div>
+            </div>
+            <h1>Click on coin to flip</h1>
           </DialogContent>
           <DialogActions style={style}>
             <Button onClick={handleCloseTwo} color="primary" autoFocus>
@@ -181,9 +193,9 @@ const Form = () => {
             <DialogContentText id="alert-dialog-description">
               <div>
                 Here is how Picky Hat works:
-                <ol>
+                <ul>
                   <li>
-                    Add some things to Picky Hat. Names, restuaurants, games,
+                    Add some things to Picky Hat. Names, restaurants, games,
                     etc...
                   </li>
                   <li>Hover over Picky Hat to shake it up.</li>
@@ -192,7 +204,7 @@ const Form = () => {
                   <li>
                     To remove an item individually, simply click on that item.
                   </li>
-                </ol>
+                </ul>
               </div>
             </DialogContentText>
           </DialogContent>
@@ -202,6 +214,15 @@ const Form = () => {
             </Button>
           </DialogActions>
         </Dialog>
+      </div>
+      <div className={classes.root}>
+        <Fab
+          color="primary"
+          aria-label="add"
+          onClick={() => setOpenThree(true)}
+        >
+          <HelpIcon />
+        </Fab>
       </div>
     </form>
   );
