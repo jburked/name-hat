@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { FixedSizeList, ListChildComponentProps } from "react-window";
 import Cookie from "universal-cookie";
-import hat from "./upsideDownHat.png";
+import hat from "./sunhat.png";
 import "./Form.css";
 import { makeStyles } from "@material-ui/core/styles";
-
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Fab from "@material-ui/core/Fab";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Grid from "@material-ui/core/Grid";
 import HelpIcon from "@material-ui/icons/Help";
+import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 const style = { justifyContent: "center" };
 
@@ -23,6 +30,42 @@ const useStyles = makeStyles((theme) => ({
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
+  },
+  image: {
+    backgroundImage: "url(./springBG.jpg)",
+    backgroundRepeat: "no-repeat",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  butts: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  specialbutt: {
+    marginTop: "100%",
+  },
+  buttHolder: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 }));
 
@@ -73,65 +116,115 @@ const Form = () => {
     }
   };
 
+  const showHatContents = () => {
+    if (list.length > 0) {
+      return (
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <h4>What's in the hat?</h4>
+          <List className={classes.root}>
+            {list.map((name) => (
+              <li key={name}>
+                <ul>
+                  <ListItem>
+                    <ListItemText primary={name} />
+                  </ListItem>
+                </ul>
+              </li>
+            ))}
+          </List>
+        </Grid>
+      );
+    }
+  };
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (list.includes(name)) {
-          setTitle("Check your list");
-          setChosenOne(name + " is already in the hat");
-          setButtonWords("We all make mistakes.");
-          handleClickOpen();
-          setName("");
-        } else if (!name) {
-          setTitle("Whoa whoa whoa");
-          setChosenOne("You can't put nothing in this hat.");
-          setButtonWords("We all make mistakes.");
-          handleClickOpen();
-        } else {
-          setList(list.concat(name));
-          setName("");
-        }
-        e.currentTarget.autofocus = true;
-      }}
-    >
-      <div className="mainContainer">
-        <div className="row">
-          <input
-            autoFocus
-            type="name"
-            className="inputText"
-            value={name}
-            placeholder="Hat knows best "
-            onChange={(e) => {
-              setName(e.currentTarget.value);
-            }}
-          />
-        </div>
-        <div>
-          <button type="submit">Add it to the Hat</button>
-          <button type="reset" onClick={() => setList([])}>
-            Empty the Hat.
-          </button>
-        </div>
-        <ul className="List-container">
-          {list.map((name) => (
-            <li key={name}>
-              <button
-                className="name"
-                onClick={() => setList(list.filter((n) => n !== name))}
-              >
-                <span>{name}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="Hat-box">
-        <div className="Hat-box-inner">
-          {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
-        </div>
-      </div>
+    <div>
+      <Grid container component="main" style={{ flexWrap: "nowrap" }}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={classes.image}>
+          <div className="Hat-box">
+            <div className="Hat-box-inner">
+              {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
+            </div>
+          </div>
+        </Grid>
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <form
+              className={classes.form}
+              noValidate
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (list.includes(name)) {
+                  setTitle("Check your list");
+                  setChosenOne(name + " is already in the hat");
+                  setButtonWords("We all make mistakes.");
+                  handleClickOpen();
+                  setName("");
+                } else if (!name) {
+                  setTitle("Whoa whoa whoa");
+                  setChosenOne("You can't put nothing in this hat.");
+                  setButtonWords("We all make mistakes.");
+                  handleClickOpen();
+                } else {
+                  setList(list.concat(name));
+                  setName("");
+                }
+                e.currentTarget.autofocus = true;
+              }}
+            >
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="name"
+                autoFocus
+                type="name"
+                className="inputText"
+                value={name}
+                placeholder="Hat knows best "
+                onChange={(e) => {
+                  setName(e.currentTarget.value);
+                }}
+              />
+              <div className={classes.buttHolder}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.butts}
+                >
+                  Put it in that hat!
+                </Button>
+
+                <Button
+                  type="reset"
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  className={classes.butts}
+                  onClick={() => setList([])}
+                >
+                  Empty that hat!
+                </Button>
+
+                <Button
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                  className={classes.specialbutt}
+                  onClick={() => setOpenThree(true)}
+                >
+                  <HelpIcon />
+                </Button>
+              </div>
+            </form>
+          </div>
+        </Grid>
+        {showHatContents()}
+      </Grid>
 
       <div>
         {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -226,16 +319,7 @@ const Form = () => {
           </DialogActions>
         </Dialog>
       </div>
-      <div className={classes.root}>
-        <Fab
-          color="primary"
-          aria-label="add"
-          onClick={() => setOpenThree(true)}
-        >
-          <HelpIcon />
-        </Fab>
-      </div>
-    </form>
+    </div>
   );
 };
 

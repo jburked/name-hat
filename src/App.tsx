@@ -6,6 +6,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Let Picky Hat pick</h1>
+
         <div>
           <Form />
         </div>
