@@ -11,7 +11,6 @@ export type pObject = {
   displayTitle: string;
   displayButtonText: string;
   displayChosenItem: string;
-  handleClick: () => void;
 };
 
 export enum Seasons {
