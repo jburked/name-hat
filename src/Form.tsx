@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
 import Cookie from "universal-cookie";
 import hat from "./sunhat.png";
 import "./Form.css";
+import { useAtom } from "jotai";
+import { itemAtom, itemListAtom, nameAtom } from "./Atoms";
+import { Item, pObject } from "./types";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -18,7 +21,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Grid from "@material-ui/core/Grid";
 import HelpIcon from "@material-ui/icons/Help";
 import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import Switch from "@material-ui/core/Switch";
+import { ListItemSecondaryAction } from "@material-ui/core";
 
 const style = { justifyContent: "center" };
 
@@ -71,14 +75,35 @@ const useStyles = makeStyles((theme) => ({
 
 const Form = () => {
   const classes = useStyles();
-  const [name, setName] = useState("");
-  const [chosenOne, setChosenOne] = useState("");
-  const [list, setList] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [openTwo, setOpenTwo] = useState(false);
   const [openThree, setOpenThree] = useState(false);
-  const [title, setTitle] = useState("");
-  const [buttonWords, setButtonWords] = useState("");
+  const [name, setName] = useAtom(nameAtom);
+
+  const [list, setList] = useAtom(itemListAtom);
+  // const [inTheMix] = useAtom(inTheMixAtom);
+  const [pops, setPops] = useState<pObject>();
+  const [item, setItem] = useAtom(itemAtom);
+
+  const toggleItemInTheMix = (index: number) => {
+    setList(() =>
+      list.map((item, indx) =>
+        index === indx ? { ...item, inTheMix: !item.inTheMix } : item
+      )
+    );
+  };
+
+  const addItem = (itemValue: string) => {
+    setItem({
+      value: itemValue,
+      inTheMix: true,
+    });
+    setList(list.concat(item));
+  };
+
+  const deleteItem = (index: number) => {
+    setList(list.filter((val, indx) => index !== indx));
+  };
 
   useEffect(() => {
     const cookies = new Cookie();
@@ -101,40 +126,84 @@ const Form = () => {
   const handleCloseThree = () => {
     setOpenThree(false);
   };
+
   const onDraw = () => {
     if (list && list.length >= 2) {
-      setChosenOne(list[Math.floor(Math.random() * list.length)]);
-      setTitle("THE HAT HAS DECIDED");
-      setButtonWords("DO IT AGAIN!");
-      handleClickOpen();
-      setList([]);
+      setPops({
+        displayTitle: "THE HAT HAS DECIDED",
+        displayButtonText: "DO IT AGAIN!",
+        displayChosenItem: list[Math.floor(Math.random() * list.length)].value,
+        handleClick: handleClickOpen,
+      });
     } else {
-      setChosenOne("Hat can't pick from nothing");
-      setTitle("...");
-      setButtonWords("We all make mistakes.");
-      handleClickOpen();
+      setPops({
+        displayTitle: "Hat needs more",
+        displayButtonText: "We all make mistakes.",
+        displayChosenItem: "...",
+        handleClick: () => handleClickOpen,
+      });
     }
   };
 
-  const showHatContents = () => {
-    if (list.length > 0) {
-      return (
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <h4>What's in the hat?</h4>
-          <List className={classes.root}>
-            {list.map((name) => (
-              <li key={name}>
-                <ul>
-                  <ListItem>
-                    <ListItemText primary={name} />
-                  </ListItem>
-                </ul>
-              </li>
-            ))}
-          </List>
-        </Grid>
-      );
+  const handleChange = (val: string) => {
+    console.log("Handle change");
+    console.log("Here is your dumb list: ", list);
+    setItem({ value: val, inTheMix: true });
+  };
+
+  // const handleToggle = (_item: Item, index: number) => () => {
+  //   const currentIndex = checked.indexOf(_item.value);
+  //   const newChecked = [...checked];
+
+  //   if (currentIndex === -1) {
+  //     newChecked.push(_item.value);
+  //   } else {
+  //     newChecked.splice(currentIndex, 1);
+  //   }
+  //   toggleItemInTheMix(index);
+  //   setChecked(newChecked);
+  // };
+
+  const [checked, setChecked] = React.useState([1]);
+
+  const handleToggle = (value: number) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
     }
+
+    setChecked(newChecked);
+  };
+
+  const showHatContents = () => {
+    // if (list.length > 0) {
+    return (
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <h4>What's in the hat?</h4>
+        <List className={classes.root}>
+          {list.map((i, index) => (
+            <ListItem key={`${i.value}-${index}`}>
+              <ListItemText id={`${i.value}-${index}-text`} primary={index} />
+              <ListItemSecondaryAction>
+                <Switch
+                  edge="end"
+                  onChange={handleToggle(index)}
+                  checked={checked.indexOf(index) !== -1}
+                  inputProps={{
+                    "aria-labelledby": `switch-list-label-${i.value}`,
+                  }}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </Grid>
+    );
+    // }
   };
 
   return (
@@ -155,19 +224,32 @@ const Form = () => {
               noValidate
               onSubmit={(e) => {
                 e.preventDefault();
-                if (list.includes(name)) {
-                  setTitle("Check your list");
-                  setChosenOne(name + " is already in the hat");
-                  setButtonWords("We all make mistakes.");
-                  handleClickOpen();
-                  setName("");
+                const g = {
+                  value: e.currentTarget.value,
+                  inTheMix: true || false,
+                };
+                if (list && list.includes(g)) {
+                  console.log("DUPLICATE");
+                  console.log(list);
+                  setPops({
+                    displayTitle: "Check your list",
+                    displayButtonText: "We all make mistakes.",
+                    displayChosenItem:
+                      e.currentTarget.value + " is already in the hat",
+                    handleClick: () => true,
+                  });
                 } else if (!name) {
-                  setTitle("Whoa whoa whoa");
-                  setChosenOne("You can't put nothing in this hat.");
-                  setButtonWords("We all make mistakes.");
-                  handleClickOpen();
+                  console.log("EMPTY");
+                  setPops({
+                    displayTitle: "Whoa whoa whoa",
+                    displayButtonText: "We all make mistakes.",
+                    displayChosenItem: "You can't put nothing in this hat.",
+                    handleClick: () => true,
+                  });
                 } else {
-                  setList(list.concat(name));
+                  console.log("ADDED TO LIST");
+                  addItem(e.currentTarget.value);
+
                   setName("");
                 }
                 e.currentTarget.autofocus = true;
@@ -184,9 +266,7 @@ const Form = () => {
                 className="inputText"
                 value={name}
                 placeholder="Hat knows best "
-                onChange={(e) => {
-                  setName(e.currentTarget.value);
-                }}
+                onChange={(e) => setName(e.currentTarget.value)}
               />
               <div className={classes.buttHolder}>
                 <Button
@@ -225,7 +305,6 @@ const Form = () => {
         </Grid>
         {showHatContents()}
       </Grid>
-
       <div>
         {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
           Open alert dialog
@@ -236,38 +315,17 @@ const Form = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            {pops && pops.displayTitle}
+          </DialogTitle>
           <DialogContent style={style}>
             <DialogContentText id="alert-dialog-description">
-              {chosenOne}
+              {pops && pops.displayChosenItem}
             </DialogContentText>
           </DialogContent>
           <DialogActions style={style}>
-            <Button onClick={handleClose} color="primary" autoFocus>
-              {buttonWords}
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={openTwo}
-          onClose={handleCloseTwo}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-          <DialogContent style={style}>
-            <DialogContentText id="alert-dialog-description">
-              {chosenOne}
-            </DialogContentText>
-            <div id="coin">
-              <div className="side-a"></div>
-              <div className="side-b"></div>
-            </div>
-            <h1>Click on coin to flip</h1>
-          </DialogContent>
-          <DialogActions style={style}>
-            <Button onClick={handleCloseTwo} color="primary" autoFocus>
-              {buttonWords}
+            <Button onClick={pops?.handleClick} color="primary" autoFocus>
+              {pops && pops.displayButtonText}
             </Button>
           </DialogActions>
         </Dialog>
