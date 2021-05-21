@@ -78,12 +78,14 @@ const Form = () => {
   const [open, setOpen] = useState(false);
   const [openTwo, setOpenTwo] = useState(false);
   const [openThree, setOpenThree] = useState(false);
-  const [name, setName] = useAtom(nameAtom);
+  // const [name, setName] = useAtom(nameAtom);
+  const [name, setName] = useState("");
 
   const [list, setList] = useAtom(itemListAtom);
   // const [inTheMix] = useAtom(inTheMixAtom);
   const [pops, setPops] = useState<pObject>();
-  const [item, setItem] = useAtom(itemAtom);
+  // const [item, setItem] = useAtom(itemAtom);
+  const [item, setItem] = useState({ value: "", inTheMix: false });
 
   const toggleItemInTheMix = (index: number) => {
     setList(() =>
@@ -187,7 +189,7 @@ const Form = () => {
         <List className={classes.root}>
           {list.map((i, index) => (
             <ListItem key={`${i.value}-${index}`}>
-              <ListItemText id={`${i.value}-${index}-text`} primary={index} />
+              <ListItemText id={`${i.value}-${index}-text`} primary={i.value} />
               <ListItemSecondaryAction>
                 <Switch
                   edge="end"
@@ -224,11 +226,25 @@ const Form = () => {
               noValidate
               onSubmit={(e) => {
                 e.preventDefault();
-                const g = {
-                  value: e.currentTarget.value,
+                console.log("What is name? ", name);
+                console.log("What. Is. It ? ", {
+                  value: name,
                   inTheMix: true || false,
-                };
-                if (list && list.includes(g)) {
+                });
+                console.log(
+                  "Fancy SOME shit ",
+                  list.some((el) => {
+                    console.log("el.value ", el.value);
+                    console.log("name", name);
+                    const match = el.value === name;
+                    console.log("do they match?? ", `${match}`);
+                  })
+                );
+                console.log(
+                  "Is it in the list ? ",
+                  list.includes({ value: name, inTheMix: true })
+                );
+                if (list.some((el) => el.value === name)) {
                   console.log("DUPLICATE");
                   console.log(list);
                   setPops({
@@ -238,8 +254,9 @@ const Form = () => {
                       e.currentTarget.value + " is already in the hat",
                     handleClick: () => true,
                   });
-                } else if (!name) {
-                  console.log("EMPTY");
+                } else if (name === "") {
+                  console.log("EMPTY ENTRY");
+                  console.log(list);
                   setPops({
                     displayTitle: "Whoa whoa whoa",
                     displayButtonText: "We all make mistakes.",
@@ -247,10 +264,8 @@ const Form = () => {
                     handleClick: () => true,
                   });
                 } else {
-                  console.log("ADDED TO LIST");
-                  addItem(e.currentTarget.value);
-
-                  setName("");
+                  console.log("adding to the list");
+                  setList(() => [...list, { value: name, inTheMix: true }]);
                 }
                 e.currentTarget.autofocus = true;
               }}
@@ -264,7 +279,7 @@ const Form = () => {
                 autoFocus
                 type="name"
                 className="inputText"
-                value={name}
+                value={item.value}
                 placeholder="Hat knows best "
                 onChange={(e) => setName(e.currentTarget.value)}
               />
