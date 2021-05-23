@@ -79,16 +79,11 @@ const useStyles = makeStyles((theme) => ({
 const Form = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [openTwo, setOpenTwo] = useState(false);
   const [openThree, setOpenThree] = useState(false);
-  // const [name, setName] = useAtom(nameAtom);
   const [name, setName] = useState("");
 
   const [list, setList] = useAtom(itemListAtom);
-  // const [inTheMix] = useAtom(inTheMixAtom);
   const [pops, setPops] = useState<pObject>();
-  // const [item, setItem] = useAtom(itemAtom);
-  const [item, setItem] = useState({ value: "", inTheMix: false });
 
   useEffect(() => {
     const cookies = new Cookie();
@@ -136,6 +131,10 @@ const Form = () => {
         value === indx ? { ...item, inTheMix: !item.inTheMix } : item
       )
     );
+    list.map((item, indx) =>
+      localStorage.setItem(JSON.stringify(indx), JSON.stringify(item))
+    );
+
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -149,6 +148,18 @@ const Form = () => {
   };
 
   const showHatContents = () => {
+    console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
+    if (list.length === 0 && localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        const tempObj = JSON.parse(localStorage.getItem(JSON.stringify(i))!);
+        console.log("TEMP OBJECT : ", tempObj);
+        setList(() => [...list, tempObj]);
+        // const newItem = JSON.parse(
+        //   localStorage.getItem(JSON.stringify(i + 1))!
+        // );
+        // setList(() => [...list, newItem]);
+      }
+    }
     if (list && list.length > 0) {
       return (
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -173,7 +184,13 @@ const Form = () => {
                     edge="end"
                     aria-label="delete"
                     onClick={() => {
-                      setList(list.filter((aye) => aye !== i));
+                      setList(list.filter((aye) => aye.value !== i.value));
+                      list.map((item, index) =>
+                        localStorage.setItem(
+                          JSON.stringify(index),
+                          JSON.stringify(item)
+                        )
+                      );
                     }}
                   >
                     <DeleteIcon style={{ color: red[500] }} />
@@ -231,7 +248,12 @@ const Form = () => {
                   });
                   setOpen(true);
                 } else {
-                  setList(() => [...list, { value: name, inTheMix: true }]);
+                  const newItem = { value: name, inTheMix: true };
+                  setList(() => [...list, newItem]);
+                  localStorage.setItem(
+                    JSON.stringify(list.length),
+                    JSON.stringify(newItem)
+                  );
                   setName("");
                 }
                 e.currentTarget.autofocus = true;
@@ -267,7 +289,10 @@ const Form = () => {
                   variant="contained"
                   color="secondary"
                   className={classes.butts}
-                  onClick={() => setList([])}
+                  onClick={() => {
+                    setList([]);
+                    localStorage.clear();
+                  }}
                 >
                   Empty that hat!
                 </Button>
@@ -323,7 +348,10 @@ const Form = () => {
             {"Welcome to Picky Hat!"}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+            <DialogContentText
+              id="alert-dialog-description"
+              color="textPrimary"
+            >
               <div>
                 Here is how Picky Hat works:
                 <ul>
