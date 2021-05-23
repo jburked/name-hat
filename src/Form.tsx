@@ -85,6 +85,14 @@ const Form = () => {
   const [list, setList] = useAtom(itemListAtom);
   const [pops, setPops] = useState<pObject>();
 
+  const [testList, setTestList] = useState<Item[]>(
+    JSON.parse(localStorage.getItem("list") || "{}")
+  );
+
+  const updateLocalStorage = () => {
+    localStorage.setItem("list", JSON.stringify(testList));
+  };
+
   useEffect(() => {
     const cookies = new Cookie();
     if (cookies.get("toolTip") === "no") {
@@ -93,7 +101,17 @@ const Form = () => {
       cookies.set("toolTip", "no", { path: "/" });
       setOpenThree(true);
     }
-  }, []);
+    console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
+    if (
+      (testList.length === 0 && localStorage.length > 0) ||
+      localStorage.length > testList.length
+    ) {
+      setTestList(() => [
+        ...testList,
+        JSON.parse(localStorage.getItem("list")!),
+      ]);
+    }
+  }, [testList]);
 
   const handleClose = () => {
     setOpen(false);
@@ -104,7 +122,8 @@ const Form = () => {
   };
 
   const onDraw = () => {
-    const tempList = list.filter((ites) => ites.inTheMix !== false);
+    // const tempList = list.filter((ites) => ites.inTheMix !== false);
+    const tempList = testList.filter((ites) => ites.inTheMix !== false);
     if (tempList && tempList.length >= 2) {
       console.log("Picking from this list : ", tempList);
       setPops({
@@ -126,14 +145,12 @@ const Form = () => {
   const [checked, setChecked] = React.useState([1]);
 
   const handleToggle = (value: number) => () => {
-    setList(() =>
-      list.map((item, indx) =>
+    setTestList(() =>
+      testList.map((item, indx) =>
         value === indx ? { ...item, inTheMix: !item.inTheMix } : item
       )
     );
-    list.map((item, indx) =>
-      localStorage.setItem(JSON.stringify(indx), JSON.stringify(item))
-    );
+    updateLocalStorage();
 
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -148,24 +165,22 @@ const Form = () => {
   };
 
   const showHatContents = () => {
-    console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
-    if (list.length === 0 && localStorage.length > 0) {
-      for (var i = 0; i < localStorage.length; i++) {
-        const tempObj = JSON.parse(localStorage.getItem(JSON.stringify(i))!);
-        console.log("TEMP OBJECT : ", tempObj);
-        setList(() => [...list, tempObj]);
-        // const newItem = JSON.parse(
-        //   localStorage.getItem(JSON.stringify(i + 1))!
-        // );
-        // setList(() => [...list, newItem]);
-      }
-    }
-    if (list && list.length > 0) {
+    // console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
+    // if (
+    //   (testList.length === 0 && localStorage.length > 0) ||
+    //   localStorage.length > testList.length
+    // ) {
+    //   setTestList(() => [
+    //     ...testList,
+    //     JSON.parse(localStorage.getItem("list")!),
+    //   ]);
+    // }
+    if (testList && testList.length > 0) {
       return (
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <h4>What's in the hat?</h4>
           <List className={classes.root}>
-            {list.map((i, index) => (
+            {testList.map((i, index) => (
               <ListItem key={`${i.value}-${index}`}>
                 <ListItemText
                   id={`${i.value}-${index}-text`}
@@ -184,13 +199,10 @@ const Form = () => {
                     edge="end"
                     aria-label="delete"
                     onClick={() => {
-                      setList(list.filter((aye) => aye.value !== i.value));
-                      list.map((item, index) =>
-                        localStorage.setItem(
-                          JSON.stringify(index),
-                          JSON.stringify(item)
-                        )
+                      setTestList(() =>
+                        testList.filter((aye) => aye.value !== i.value)
                       );
+                      updateLocalStorage();
                     }}
                   >
                     <DeleteIcon style={{ color: red[500] }} />
@@ -230,7 +242,7 @@ const Form = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 if (
-                  list.some(
+                  testList.some(
                     (el) => el.value.toLowerCase() === name.toLowerCase()
                   )
                 ) {
@@ -248,14 +260,15 @@ const Form = () => {
                   });
                   setOpen(true);
                 } else {
-                  const newItem = { value: name, inTheMix: true };
-                  setList(() => [...list, newItem]);
-                  localStorage.setItem(
-                    JSON.stringify(list.length),
-                    JSON.stringify(newItem)
-                  );
+                  // const newItem = { value: name, inTheMix: true };
+                  setTestList(() => [
+                    ...testList,
+                    { value: name, inTheMix: true },
+                  ]);
+                  console.log("HERE IS THE LIST : ", testList);
                   setName("");
                 }
+                updateLocalStorage();
                 e.currentTarget.autofocus = true;
               }}
             >
@@ -290,7 +303,7 @@ const Form = () => {
                   color="secondary"
                   className={classes.butts}
                   onClick={() => {
-                    setList([]);
+                    setTestList([]);
                     localStorage.clear();
                   }}
                 >
