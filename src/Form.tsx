@@ -3,8 +3,8 @@ import Cookie from "universal-cookie";
 import hat from "./sunhat.png";
 import "./Form.css";
 import { useAtom } from "jotai";
-import { itemAtom, itemListAtom, nameAtom } from "./Atoms";
-import { Item, pObject } from "./types";
+import { itemListAtom } from "./Atoms";
+import { pObject } from "./types";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -19,7 +19,6 @@ import Paper from "@material-ui/core/Paper";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Grid from "@material-ui/core/Grid";
-import HelpIcon from "@material-ui/icons/Help";
 import List from "@material-ui/core/List";
 import Switch from "@material-ui/core/Switch";
 import { ListItemSecondaryAction } from "@material-ui/core";
@@ -85,14 +84,6 @@ const Form = () => {
   const [list, setList] = useAtom(itemListAtom);
   const [pops, setPops] = useState<pObject>();
 
-  const [testList, setTestList] = useState<Item[]>(
-    JSON.parse(localStorage.getItem("list") || "{}")
-  );
-
-  const updateLocalStorage = () => {
-    localStorage.setItem("list", JSON.stringify(testList));
-  };
-
   useEffect(() => {
     const cookies = new Cookie();
     if (cookies.get("toolTip") === "no") {
@@ -103,15 +94,12 @@ const Form = () => {
     }
     console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
     if (
-      (testList.length === 0 && localStorage.length > 0) ||
-      localStorage.length > testList.length
+      (list.length === 0 && localStorage.length > 0) ||
+      localStorage.length > list.length
     ) {
-      setTestList(() => [
-        ...testList,
-        JSON.parse(localStorage.getItem("list")!),
-      ]);
+      setList(() => [...list, JSON.parse(localStorage.getItem("list")!)]);
     }
-  }, [testList]);
+  }, [list, setList]);
 
   const handleClose = () => {
     setOpen(false);
@@ -122,8 +110,7 @@ const Form = () => {
   };
 
   const onDraw = () => {
-    // const tempList = list.filter((ites) => ites.inTheMix !== false);
-    const tempList = testList.filter((ites) => ites.inTheMix !== false);
+    const tempList = list.filter((ites) => ites.inTheMix !== false);
     if (tempList && tempList.length >= 2) {
       console.log("Picking from this list : ", tempList);
       setPops({
@@ -145,12 +132,11 @@ const Form = () => {
   const [checked, setChecked] = React.useState([1]);
 
   const handleToggle = (value: number) => () => {
-    setTestList(() =>
-      testList.map((item, indx) =>
+    setList(() =>
+      list.map((item, indx) =>
         value === indx ? { ...item, inTheMix: !item.inTheMix } : item
       )
     );
-    updateLocalStorage();
 
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -165,22 +151,18 @@ const Form = () => {
   };
 
   const showHatContents = () => {
-    // console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
-    // if (
-    //   (testList.length === 0 && localStorage.length > 0) ||
-    //   localStorage.length > testList.length
-    // ) {
-    //   setTestList(() => [
-    //     ...testList,
-    //     JSON.parse(localStorage.getItem("list")!),
-    //   ]);
-    // }
-    if (testList && testList.length > 0) {
+    if (
+      (list.length === 0 && localStorage.length > 0) ||
+      localStorage.length > list.length
+    ) {
+      setList(() => JSON.parse(localStorage.getItem("list")!));
+    }
+    if (list.length >= 1) {
       return (
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <h4>What's in the hat?</h4>
           <List className={classes.root}>
-            {testList.map((i, index) => (
+            {list.map((i, index) => (
               <ListItem key={`${i.value}-${index}`}>
                 <ListItemText
                   id={`${i.value}-${index}-text`}
@@ -199,10 +181,21 @@ const Form = () => {
                     edge="end"
                     aria-label="delete"
                     onClick={() => {
-                      setTestList(() =>
-                        testList.filter((aye) => aye.value !== i.value)
-                      );
-                      updateLocalStorage();
+                      if (list.length === 1) {
+                        localStorage.clear();
+                        setList([]);
+                      } else {
+                        localStorage.setItem(
+                          "list",
+                          JSON.stringify(
+                            list.filter((aye) => aye.value !== i.value)
+                          )
+                        );
+                        const deleteList = list.filter(
+                          (aye) => aye.value !== i.value
+                        );
+                        setList(deleteList);
+                      }
                     }}
                   >
                     <DeleteIcon style={{ color: red[500] }} />
@@ -242,7 +235,7 @@ const Form = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 if (
-                  testList.some(
+                  list.some(
                     (el) => el.value.toLowerCase() === name.toLowerCase()
                   )
                 ) {
@@ -260,15 +253,11 @@ const Form = () => {
                   });
                   setOpen(true);
                 } else {
-                  // const newItem = { value: name, inTheMix: true };
-                  setTestList(() => [
-                    ...testList,
-                    { value: name, inTheMix: true },
-                  ]);
-                  console.log("HERE IS THE LIST : ", testList);
+                  const t = [...list, { value: name, inTheMix: true }];
+                  localStorage.setItem("list", JSON.stringify(t));
+                  setList(t);
                   setName("");
                 }
-                updateLocalStorage();
                 e.currentTarget.autofocus = true;
               }}
             >
@@ -303,8 +292,8 @@ const Form = () => {
                   color="secondary"
                   className={classes.butts}
                   onClick={() => {
-                    setTestList([]);
                     localStorage.clear();
+                    setList([]);
                   }}
                 >
                   Empty that hat!
@@ -326,9 +315,6 @@ const Form = () => {
         {showHatContents()}
       </Grid>
       <div>
-        {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-          Open alert dialog
-        </Button> */}
         <Dialog
           open={open}
           onClose={handleClose}
