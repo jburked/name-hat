@@ -92,14 +92,7 @@ const Form = () => {
       cookies.set("toolTip", "no", { path: "/" });
       setOpenThree(true);
     }
-    console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
-    if (
-      (list.length === 0 && localStorage.length > 0) ||
-      localStorage.length > list.length
-    ) {
-      setList(() => [...list, JSON.parse(localStorage.getItem("list")!)]);
-    }
-  }, [list, setList]);
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -173,6 +166,7 @@ const Form = () => {
                     edge="end"
                     onChange={handleToggle(index)}
                     checked={i.inTheMix}
+                    color="primary"
                     inputProps={{
                       "aria-labelledby": `switch-list-label-${i.value}`,
                     }}
