@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from "react";
 import Cookie from "universal-cookie";
-import hat from "./upsideDownHat.png";
+import hat from "./sunhat.png";
 import "./Form.css";
-import { makeStyles } from "@material-ui/core/styles";
+import { useAtom } from "jotai";
+import { itemListAtom } from "./Atoms";
+import { pObject } from "./types";
 
+import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Fab from "@material-ui/core/Fab";
-import HelpIcon from "@material-ui/icons/Help";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Grid from "@material-ui/core/Grid";
+import List from "@material-ui/core/List";
+import Switch from "@material-ui/core/Switch";
+import { ListItemSecondaryAction } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { red } from "@material-ui/core/colors";
 
 const style = { justifyContent: "center" };
 
@@ -24,18 +37,52 @@ const useStyles = makeStyles((theme) => ({
   extendedIcon: {
     marginRight: theme.spacing(1),
   },
+  image: {
+    backgroundImage: "url(./springBG.jpg)",
+    backgroundRepeat: "no-repeat",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  butts: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  specialbutt: {
+    marginTop: "100%",
+  },
+  buttHolder: {
+    margin: theme.spacing(0, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
 }));
 
 const Form = () => {
   const classes = useStyles();
-  const [name, setName] = useState("");
-  const [chosenOne, setChosenOne] = useState("");
-  const [list, setList] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
-  const [openTwo, setOpenTwo] = useState(false);
   const [openThree, setOpenThree] = useState(false);
-  const [title, setTitle] = useState("");
-  const [buttonWords, setButtonWords] = useState("");
+  const [name, setName] = useState("");
+
+  const [list, setList] = useAtom(itemListAtom);
+  const [pops, setPops] = useState<pObject>();
 
   useEffect(() => {
     const cookies = new Cookie();
@@ -45,136 +92,246 @@ const Form = () => {
       cookies.set("toolTip", "no", { path: "/" });
       setOpenThree(true);
     }
-  }, []);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+    console.log("LOCAL STORAGE LENGTH : ", localStorage.length);
+    if (
+      (list.length === 0 && localStorage.length > 0) ||
+      localStorage.length > list.length
+    ) {
+      setList(() => [...list, JSON.parse(localStorage.getItem("list")!)]);
+    }
+  }, [list, setList]);
+
   const handleClose = () => {
     setOpen(false);
   };
-  const handleCloseTwo = () => {
-    setOpenTwo(false);
-  };
+
   const handleCloseThree = () => {
     setOpenThree(false);
   };
+
   const onDraw = () => {
-    if (list && list.length >= 2) {
-      setChosenOne(list[Math.floor(Math.random() * list.length)]);
-      setTitle("THE HAT HAS DECIDED");
-      setButtonWords("DO IT AGAIN!");
-      handleClickOpen();
-      setList([]);
+    const tempList = list.filter((ites) => ites.inTheMix !== false);
+    if (tempList && tempList.length >= 2) {
+      console.log("Picking from this list : ", tempList);
+      setPops({
+        displayTitle: "THE HAT HAS DECIDED",
+        displayButtonText: "DO IT AGAIN!",
+        displayChosenItem:
+          tempList[Math.floor(Math.random() * tempList.length)].value,
+      });
     } else {
-      setChosenOne("Hat can't pick from nothing");
-      setTitle("...");
-      setButtonWords("We all make mistakes.");
-      handleClickOpen();
+      setPops({
+        displayTitle: "Hat needs more",
+        displayButtonText: "We all make mistakes.",
+        displayChosenItem: "...",
+      });
+    }
+    setOpen(true);
+  };
+
+  const [checked, setChecked] = React.useState([1]);
+
+  const handleToggle = (value: number) => () => {
+    setList(() =>
+      list.map((item, indx) =>
+        value === indx ? { ...item, inTheMix: !item.inTheMix } : item
+      )
+    );
+
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
+
+  const showHatContents = () => {
+    if (
+      (list.length === 0 && localStorage.length > 0) ||
+      localStorage.length > list.length
+    ) {
+      setList(() => JSON.parse(localStorage.getItem("list")!));
+    }
+    if (list.length >= 1) {
+      return (
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <h4>What's in the hat?</h4>
+          <List className={classes.root}>
+            {list.map((i, index) => (
+              <ListItem key={`${i.value}-${index}`}>
+                <ListItemText
+                  id={`${i.value}-${index}-text`}
+                  primary={i.value}
+                />
+                <ListItemSecondaryAction>
+                  <Switch
+                    edge="end"
+                    onChange={handleToggle(index)}
+                    checked={i.inTheMix}
+                    inputProps={{
+                      "aria-labelledby": `switch-list-label-${i.value}`,
+                    }}
+                  />
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => {
+                      if (list.length === 1) {
+                        localStorage.clear();
+                        setList([]);
+                      } else {
+                        localStorage.setItem(
+                          "list",
+                          JSON.stringify(
+                            list.filter((aye) => aye.value !== i.value)
+                          )
+                        );
+                        const deleteList = list.filter(
+                          (aye) => aye.value !== i.value
+                        );
+                        setList(deleteList);
+                      }
+                    }}
+                  >
+                    <DeleteIcon style={{ color: red[500] }} />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
+      );
     }
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (list.includes(name)) {
-          setTitle("Check your list");
-          setChosenOne(name + " is already in the hat");
-          setButtonWords("We all make mistakes.");
-          handleClickOpen();
-          setName("");
-        } else if (!name) {
-          setTitle("Whoa whoa whoa");
-          setChosenOne("You can't put nothing in this hat.");
-          setButtonWords("We all make mistakes.");
-          handleClickOpen();
-        } else {
-          setList(list.concat(name));
-          setName("");
-        }
-        e.currentTarget.autofocus = true;
-      }}
-    >
-      <div className="mainContainer">
-        <div className="row">
-          <input
-            autoFocus
-            type="name"
-            className="inputText"
-            value={name}
-            placeholder="Hat knows best "
-            onChange={(e) => {
-              setName(e.currentTarget.value);
-            }}
-          />
-        </div>
-        <div>
-          <button type="submit">Add it to the Hat</button>
-          <button type="reset" onClick={() => setList([])}>
-            Empty the Hat.
-          </button>
-        </div>
-        <ul className="List-container">
-          {list.map((name) => (
-            <li key={name}>
-              <button
-                className="name"
-                onClick={() => setList(list.filter((n) => n !== name))}
-              >
-                <span>{name}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="Hat-box">
-        <div className="Hat-box-inner">
-          {<img src={hat} className="Hat" alt="logo" onClick={onDraw} />}
-        </div>
-      </div>
+    <div>
+      <Grid container component="main" style={{ flexWrap: "nowrap" }}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={classes.image}>
+          <div className="Hat-box">
+            <div className="Hat-box-inner">
+              {
+                <img
+                  src={hat}
+                  className="Hat"
+                  alt="logo"
+                  onClick={() => onDraw()}
+                />
+              }
+            </div>
+          </div>
+        </Grid>
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <form
+              className={classes.form}
+              noValidate
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (
+                  list.some(
+                    (el) => el.value.toLowerCase() === name.toLowerCase()
+                  )
+                ) {
+                  setPops({
+                    displayTitle: "Check your list",
+                    displayButtonText: "We all make mistakes.",
+                    displayChosenItem: name + " is already in the hat",
+                  });
+                  setOpen(true);
+                } else if (name === "" || !name.replace(/\s/g, "").length) {
+                  setPops({
+                    displayTitle: "Whoa whoa whoa",
+                    displayButtonText: "We all make mistakes.",
+                    displayChosenItem: "Please, enter some text.",
+                  });
+                  setOpen(true);
+                } else {
+                  const t = [...list, { value: name, inTheMix: true }];
+                  localStorage.setItem("list", JSON.stringify(t));
+                  setList(t);
+                  setName("");
+                }
+                e.currentTarget.autofocus = true;
+              }}
+            >
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="name"
+                autoFocus
+                type="name"
+                className="inputText"
+                value={name}
+                placeholder="Hat knows best "
+                onChange={(e) => setName(e.currentTarget.value)}
+              />
+              <div className={classes.buttHolder}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.butts}
+                >
+                  Put it in that hat!
+                </Button>
 
+                <Button
+                  type="reset"
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  className={classes.butts}
+                  onClick={() => {
+                    localStorage.clear();
+                    setList([]);
+                  }}
+                >
+                  Empty that hat!
+                </Button>
+
+                <Button
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                  className={classes.specialbutt}
+                  onClick={() => setOpenThree(true)}
+                >
+                  Need help?
+                </Button>
+              </div>
+            </form>
+          </div>
+        </Grid>
+        {showHatContents()}
+      </Grid>
       <div>
-        {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-          Open alert dialog
-        </Button> */}
         <Dialog
           open={open}
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            {pops && pops.displayTitle}
+          </DialogTitle>
           <DialogContent style={style}>
             <DialogContentText id="alert-dialog-description">
-              {chosenOne}
+              {pops && pops.displayChosenItem}
             </DialogContentText>
           </DialogContent>
           <DialogActions style={style}>
             <Button onClick={handleClose} color="primary" autoFocus>
-              {buttonWords}
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={openTwo}
-          onClose={handleCloseTwo}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-          <DialogContent style={style}>
-            <DialogContentText id="alert-dialog-description">
-              {chosenOne}
-            </DialogContentText>
-            <div id="coin">
-              <div className="side-a"></div>
-              <div className="side-b"></div>
-            </div>
-            <h1>Click on coin to flip</h1>
-          </DialogContent>
-          <DialogActions style={style}>
-            <Button onClick={handleCloseTwo} color="primary" autoFocus>
-              {buttonWords}
+              {pops && pops.displayButtonText}
             </Button>
           </DialogActions>
         </Dialog>
@@ -190,7 +347,10 @@ const Form = () => {
             {"Welcome to Picky Hat!"}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+            <DialogContentText
+              id="alert-dialog-description"
+              color="textPrimary"
+            >
               <div>
                 Here is how Picky Hat works:
                 <ul>
@@ -198,12 +358,23 @@ const Form = () => {
                     Add some things to Picky Hat. Names, restaurants, games,
                     etc...
                   </li>
-                  <li>Hover over Picky Hat to shake it up.</li>
-                  <li>Click Picky Hat and it will pick the very best choice</li>
-                  <li>"Empty the Hat" to clear the hats contents.</li>
                   <li>
-                    To remove an item individually, simply click on that item.
+                    Toggle switch to remove/add items you want to be picked.
                   </li>
+                  <li>Hover over Picky Hat to shake it up.</li>
+                  <li>
+                    Click Picky Hat and it will pick the{" "}
+                    <span
+                      style={{
+                        textDecoration: "underline",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      very best
+                    </span>{" "}
+                    choice
+                  </li>
+                  <li>"Empty the Hat" to clear the hats contents.</li>
                 </ul>
               </div>
             </DialogContentText>
@@ -215,16 +386,7 @@ const Form = () => {
           </DialogActions>
         </Dialog>
       </div>
-      <div className={classes.root}>
-        <Fab
-          color="primary"
-          aria-label="add"
-          onClick={() => setOpenThree(true)}
-        >
-          <HelpIcon />
-        </Fab>
-      </div>
-    </form>
+    </div>
   );
 };
 
