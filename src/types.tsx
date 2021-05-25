@@ -1,4 +1,13 @@
-import { isWithinInterval } from "date-fns";
+import winterHat from "./winterHat.png";
+import winterBG from "./winterBG.jpg";
+import springHat from "./sunhat.png";
+import springBG from "./springBG.jpg";
+import summerHat from "./summerHat.png";
+import summerBG from "./summerBG.jpg";
+import topHat from "./tophat.png";
+import topHatBG from "./springBG.jpg";
+import fallHat from "./fallHat.png";
+import fallBG from "./fallBG.jpg";
 
 type Season = "WINTER" | "SPRING" | "SUMMER" | "FALL";
 
@@ -20,17 +29,38 @@ export enum Seasons {
   Fall = "FALL",
 }
 
-export const seasonFromCurrentDate = (): Season => {
-  const winterInterval = { start: new Date(12, 1), end: new Date(2, 29) };
-  const springInterval = { start: new Date(3, 1), end: new Date(5, 31) };
-  const summerInterval = { start: new Date(6, 1), end: new Date(8, 31) };
-  const fallInterval = { start: new Date(9, 1), end: new Date(11, 30) };
+export const getSeasonFromCurrentDate = (): Season => {
+  const winterMonths = [12, 1, 2];
+  const springMonths = [3, 4, 5];
+  const summerMonths = [6, 7, 8];
 
-  const today = new Date();
+  const today = new Date().getMonth();
   var currentSeason!: Season;
-  if (isWithinInterval(today, winterInterval)) currentSeason = Seasons.Winter;
-  if (isWithinInterval(today, springInterval)) currentSeason = Seasons.Spring;
-  if (isWithinInterval(today, summerInterval)) currentSeason = Seasons.Summer;
-  if (isWithinInterval(today, fallInterval)) currentSeason = Seasons.Fall;
+  if (winterMonths.includes(today)) currentSeason = Seasons.Winter;
+  else if (springMonths.includes(today)) currentSeason = Seasons.Spring;
+  else if (summerMonths.includes(today)) currentSeason = Seasons.Summer;
+  else currentSeason = Seasons.Fall;
   return currentSeason;
+};
+
+export const getHatFromSeason = (): string => {
+  var season = getSeasonFromCurrentDate();
+  var hat = "";
+  if (season === Seasons.Winter) hat = winterHat;
+  else if (season === Seasons.Spring) hat = springHat;
+  else if (season === Seasons.Summer) hat = summerHat;
+  else if (season === Seasons.Fall) hat = fallHat;
+  else hat = topHat;
+  return hat;
+};
+
+export const getBGFromSeason = (): string => {
+  var season = getSeasonFromCurrentDate();
+  var backgroundImage = "";
+  if (season === Seasons.Winter) backgroundImage = winterBG;
+  else if (season === Seasons.Spring) backgroundImage = springBG;
+  else if (season === Seasons.Summer) backgroundImage = summerBG;
+  else if (season === Seasons.Fall) backgroundImage = fallBG;
+  else backgroundImage = topHatBG;
+  return "url(" + backgroundImage + ")";
 };

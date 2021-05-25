@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, CSSProperties } from "react";
 import Cookie from "universal-cookie";
-import hat from "./sunhat.png";
+// import hat from "./sunhat.png";
 import "./Form.css";
 import { useAtom } from "jotai";
 import { itemListAtom } from "./Atoms";
-import { pObject } from "./types";
+import { getBGFromSeason, getHatFromSeason, pObject } from "./types";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -27,7 +27,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { red } from "@material-ui/core/colors";
 
 const style = { justifyContent: "center" };
-
+const backgroundImage = getBGFromSeason();
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
   image: {
-    backgroundImage: "url(./springBG.jpg)",
+    backgroundImage: backgroundImage,
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"
@@ -74,13 +74,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
 }));
-
+const hat = getHatFromSeason();
 const Form = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openThree, setOpenThree] = useState(false);
   const [name, setName] = useState("");
-
   const [list, setList] = useAtom(itemListAtom);
   const [pops, setPops] = useState<pObject>();
 
@@ -104,7 +103,8 @@ const Form = () => {
 
   const onDraw = () => {
     const tempList = list.filter((ites) => ites.inTheMix !== false);
-    if (tempList && tempList.length >= 2) {
+
+    if (tempList && tempList.length > 2) {
       console.log("Picking from this list : ", tempList);
       setPops({
         displayTitle: "THE HAT HAS DECIDED",
@@ -112,6 +112,12 @@ const Form = () => {
         displayChosenItem:
           tempList[Math.floor(Math.random() * tempList.length)].value,
       });
+      // } else if (tempList && tempList.length === 2) {
+      //   setPops({
+      //     displayTitle: "FLIP A COIN",
+      //     displayButtonText: "BACK TO THE HAT!",
+      //     displayChosenItem: "Didn't expect this did ya?",
+      //   });
     } else {
       setPops({
         displayTitle: "Hat needs more",
@@ -213,7 +219,7 @@ const Form = () => {
               {
                 <img
                   src={hat}
-                  className="Hat"
+                  className={hat === "./winterHat.png" ? "Winter-hat" : "Hat"}
                   alt="logo"
                   onClick={() => onDraw()}
                 />
