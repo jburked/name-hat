@@ -1,4 +1,4 @@
-import React, { useState, useEffect, CSSProperties } from "react";
+import React, { useState, useEffect } from "react";
 import Cookie from "universal-cookie";
 // import hat from "./sunhat.png";
 import "./Form.css";
@@ -25,6 +25,9 @@ import { ListItemSecondaryAction } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { red } from "@material-ui/core/colors";
+import Slide from "@material-ui/core/Slide";
+import { TransitionProps } from "@material-ui/core/transitions";
+import { setTimeout } from "timers";
 
 const style = { justifyContent: "center" };
 const backgroundImage = getBGFromSeason();
@@ -78,6 +81,7 @@ const hat = getHatFromSeason();
 const Form = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [coinOpen, setCoinOpen] = useState(false);
   const [openThree, setOpenThree] = useState(false);
   const [name, setName] = useState("");
   const [list, setList] = useAtom(itemListAtom);
@@ -97,8 +101,21 @@ const Form = () => {
     setOpen(false);
   };
 
+  const handleCoinClose = () => {
+    setCoinOpen(false);
+  };
+
   const handleCloseThree = () => {
     setOpenThree(false);
+  };
+
+  const [side, setSide] = useState(1);
+  const [tossed, setTossed] = useState(0);
+
+  const tossCoin = () => {
+    const landedOn = Math.round(Math.random());
+    setSide(landedOn);
+    setTossed(tossed + 1);
   };
 
   const onDraw = () => {
@@ -112,20 +129,21 @@ const Form = () => {
         displayChosenItem:
           tempList[Math.floor(Math.random() * tempList.length)].value,
       });
-      // } else if (tempList && tempList.length === 2) {
+      setOpen(true);
+    } else if (tempList && tempList.length === 2) {
+      setCoinOpen(true);
       //   setPops({
       //     displayTitle: "FLIP A COIN",
       //     displayButtonText: "BACK TO THE HAT!",
       //     displayChosenItem: "Didn't expect this did ya?",
-      //   });
     } else {
       setPops({
         displayTitle: "Hat needs more",
         displayButtonText: "We all make mistakes.",
         displayChosenItem: "...",
       });
+      setOpen(true);
     }
-    setOpen(true);
   };
 
   const [checked, setChecked] = React.useState([1]);
@@ -208,6 +226,8 @@ const Form = () => {
       );
     }
   };
+
+  const [coinDivClass, setCoinDivClass] = useState("");
 
   return (
     <div>
@@ -385,6 +405,51 @@ const Form = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <div>
+          <Dialog
+            open={coinOpen}
+            onClose={handleCoinClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              Now you've done it...
+            </DialogTitle>
+            <DialogContent style={style}>
+              <DialogContentText id="alert-dialog-description">
+                {/* {pops && pops.displayChosenItem} */}
+              </DialogContentText>
+              {/* <div>
+                <p>The coin has been tossed {tossed} times.</p>
+                <p>It landed on {side === 1 ? list[0].value : list[1].value}</p>
+                <button onClick={tossCoin}>Toss coin</button>
+              </div> */}
+              <div
+                id="coin"
+                className={coinDivClass}
+                onClick={() => {
+                  var flipResult = Math.random();
+                  setTimeout(() => {
+                    if (flipResult <= 0.5) {
+                      setCoinDivClass("heads");
+                    } else {
+                      setCoinDivClass("tails");
+                    }
+                  }, 100);
+                  tossCoin();
+                }}
+              >
+                <div className="side-a"></div>
+                <div className="side-b"></div>
+              </div>
+            </DialogContent>
+            <DialogActions style={style}>
+              <Button onClick={handleCoinClose} color="primary" autoFocus>
+                Done what?
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </div>
     </div>
   );
