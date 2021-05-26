@@ -25,11 +25,10 @@ import { ListItemSecondaryAction } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { red } from "@material-ui/core/colors";
-import Slide from "@material-ui/core/Slide";
-import { TransitionProps } from "@material-ui/core/transitions";
 import { setTimeout } from "timers";
 
 const style = { justifyContent: "center" };
+const coinStyle = { justifyContent: "center", padding: 25 };
 const backgroundImage = getBGFromSeason();
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -109,15 +108,6 @@ const Form = () => {
     setOpenThree(false);
   };
 
-  const [side, setSide] = useState(1);
-  const [tossed, setTossed] = useState(0);
-
-  const tossCoin = () => {
-    const landedOn = Math.round(Math.random());
-    setSide(landedOn);
-    setTossed(tossed + 1);
-  };
-
   const onDraw = () => {
     const tempList = list.filter((ites) => ites.inTheMix !== false);
 
@@ -132,10 +122,6 @@ const Form = () => {
       setOpen(true);
     } else if (tempList && tempList.length === 2) {
       setCoinOpen(true);
-      //   setPops({
-      //     displayTitle: "FLIP A COIN",
-      //     displayButtonText: "BACK TO THE HAT!",
-      //     displayChosenItem: "Didn't expect this did ya?",
     } else {
       setPops({
         displayTitle: "Hat needs more",
@@ -413,17 +399,13 @@ const Form = () => {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              Now you've done it...
+              HAT HAS DECIDED...
             </DialogTitle>
-            <DialogContent style={style}>
+            <DialogContent style={coinStyle}>
               <DialogContentText id="alert-dialog-description">
-                {/* {pops && pops.displayChosenItem} */}
+                ...you should flip a coin instead.
               </DialogContentText>
-              {/* <div>
-                <p>The coin has been tossed {tossed} times.</p>
-                <p>It landed on {side === 1 ? list[0].value : list[1].value}</p>
-                <button onClick={tossCoin}>Toss coin</button>
-              </div> */}
+
               <div
                 id="coin"
                 className={coinDivClass}
@@ -435,8 +417,7 @@ const Form = () => {
                     } else {
                       setCoinDivClass("tails");
                     }
-                  }, 100);
-                  tossCoin();
+                  }, 50);
                 }}
               >
                 <div className="side-a"></div>
@@ -445,7 +426,7 @@ const Form = () => {
             </DialogContent>
             <DialogActions style={style}>
               <Button onClick={handleCoinClose} color="primary" autoFocus>
-                Done what?
+                Enough of this.
               </Button>
             </DialogActions>
           </Dialog>
