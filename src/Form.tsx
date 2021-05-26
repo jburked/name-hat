@@ -409,7 +409,8 @@ const Form = () => {
               <div
                 id="coin"
                 className={coinDivClass}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   var flipResult = Math.random();
                   setTimeout(() => {
                     if (flipResult <= 0.5) {
