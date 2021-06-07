@@ -263,7 +263,7 @@ const Form = () => {
                 type="name"
                 className="inputText"
                 value={name}
-                placeholder="Hat knows best "
+                placeholder="Type words and stuff here "
                 onChange={(e) => setName(e.currentTarget.value)}
               />
               <div className={classes.buttHolder}>
@@ -274,7 +274,7 @@ const Form = () => {
                   color="primary"
                   className={classes.butts}
                 >
-                  Put it in that hat!
+                  Throw it in!
                 </Button>
 
                 <Button
@@ -288,7 +288,7 @@ const Form = () => {
                     setList([]);
                   }}
                 >
-                  Empty that hat!
+                  Dump it out!
                 </Button>
 
                 <Button
@@ -298,7 +298,7 @@ const Form = () => {
                   className={classes.specialbutt}
                   onClick={() => setOpenThree(true)}
                 >
-                  Need help?
+                  Lost?
                 </Button>
               </div>
             </form>
