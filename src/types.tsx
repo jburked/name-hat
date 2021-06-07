@@ -34,12 +34,14 @@ export const getSeasonFromCurrentDate = (): Season => {
   const springMonths = [3, 4, 5];
   const summerMonths = [6, 7, 8];
 
-  const today = new Date().getMonth();
+  const today = new Date().getUTCDate();
+
   var currentSeason!: Season;
   if (winterMonths.includes(today)) currentSeason = Seasons.Winter;
   else if (springMonths.includes(today)) currentSeason = Seasons.Spring;
   else if (summerMonths.includes(today)) currentSeason = Seasons.Summer;
   else currentSeason = Seasons.Fall;
+
   return currentSeason;
 };
 
