@@ -1,4 +1,4 @@
-import React, { useState, useEffect, CSSProperties } from "react";
+import React, { useState, useEffect } from "react";
 import Cookie from "universal-cookie";
 // import hat from "./sunhat.png";
 import "./Form.css";
@@ -25,8 +25,10 @@ import { ListItemSecondaryAction } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { red } from "@material-ui/core/colors";
+import { setTimeout } from "timers";
 
 const style = { justifyContent: "center" };
+const coinStyle = { justifyContent: "center", padding: 25 };
 const backgroundImage = getBGFromSeason();
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,6 +80,7 @@ const hat = getHatFromSeason();
 const Form = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [coinOpen, setCoinOpen] = useState(false);
   const [openThree, setOpenThree] = useState(false);
   const [name, setName] = useState("");
   const [list, setList] = useAtom(itemListAtom);
@@ -97,6 +100,10 @@ const Form = () => {
     setOpen(false);
   };
 
+  const handleCoinClose = () => {
+    setCoinOpen(false);
+  };
+
   const handleCloseThree = () => {
     setOpenThree(false);
   };
@@ -112,20 +119,17 @@ const Form = () => {
         displayChosenItem:
           tempList[Math.floor(Math.random() * tempList.length)].value,
       });
-      // } else if (tempList && tempList.length === 2) {
-      //   setPops({
-      //     displayTitle: "FLIP A COIN",
-      //     displayButtonText: "BACK TO THE HAT!",
-      //     displayChosenItem: "Didn't expect this did ya?",
-      //   });
+      setOpen(true);
+    } else if (tempList && tempList.length === 2) {
+      setCoinOpen(true);
     } else {
       setPops({
         displayTitle: "Hat needs more",
         displayButtonText: "We all make mistakes.",
         displayChosenItem: "...",
       });
+      setOpen(true);
     }
-    setOpen(true);
   };
 
   const [checked, setChecked] = React.useState([1]);
@@ -208,6 +212,8 @@ const Form = () => {
       );
     }
   };
+
+  const [coinDivClass, setCoinDivClass] = useState("");
 
   return (
     <div>
@@ -385,6 +391,47 @@ const Form = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <div>
+          <Dialog
+            open={coinOpen}
+            onClose={handleCoinClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              HAT HAS DECIDED...
+            </DialogTitle>
+            <DialogContent style={coinStyle}>
+              <DialogContentText id="alert-dialog-description">
+                ...you should flip a coin instead.
+              </DialogContentText>
+
+              <div
+                id="coin"
+                className={coinDivClass}
+                onClick={(e) => {
+                  e.preventDefault();
+                  var flipResult = Math.random();
+                  setTimeout(() => {
+                    if (flipResult <= 0.5) {
+                      setCoinDivClass("heads");
+                    } else {
+                      setCoinDivClass("tails");
+                    }
+                  }, 50);
+                }}
+              >
+                <div className="side-a"></div>
+                <div className="side-b"></div>
+              </div>
+            </DialogContent>
+            <DialogActions style={style}>
+              <Button onClick={handleCoinClose} color="primary" autoFocus>
+                Enough of this.
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </div>
     </div>
   );
