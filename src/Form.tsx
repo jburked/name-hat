@@ -219,20 +219,6 @@ const Form = () => {
     <div>
       <Grid container component="main" style={{ flexWrap: "nowrap" }}>
         <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image}>
-          <div className="Hat-box">
-            <div className="Hat-box-inner">
-              {
-                <img
-                  src={hat}
-                  className={hat === "./winterHat.png" ? "Winter-hat" : "Hat"}
-                  alt="logo"
-                  onClick={() => onDraw()}
-                />
-              }
-            </div>
-          </div>
-        </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <form
@@ -316,6 +302,20 @@ const Form = () => {
                 </Button>
               </div>
             </form>
+          </div>
+        </Grid>
+        <Grid item xs={false} sm={4} md={7} className={classes.image}>
+          <div className="Hat-box">
+            <div className="Hat-box-inner">
+              {
+                <img
+                  src={hat}
+                  className={hat === "./winterHat.png" ? "Winter-hat" : "Hat"}
+                  alt="logo"
+                  onClick={() => onDraw()}
+                />
+              }
+            </div>
           </div>
         </Grid>
         {showHatContents()}
