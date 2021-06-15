@@ -219,20 +219,6 @@ const Form = () => {
     <div>
       <Grid container component="main" style={{ flexWrap: "nowrap" }}>
         <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image}>
-          <div className="Hat-box">
-            <div className="Hat-box-inner">
-              {
-                <img
-                  src={hat}
-                  className={hat === "./winterHat.png" ? "Winter-hat" : "Hat"}
-                  alt="logo"
-                  onClick={() => onDraw()}
-                />
-              }
-            </div>
-          </div>
-        </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <form
@@ -277,7 +263,7 @@ const Form = () => {
                 type="name"
                 className="inputText"
                 value={name}
-                placeholder="Hat knows best "
+                placeholder="Type words and stuff here "
                 onChange={(e) => setName(e.currentTarget.value)}
               />
               <div className={classes.buttHolder}>
@@ -288,7 +274,7 @@ const Form = () => {
                   color="primary"
                   className={classes.butts}
                 >
-                  Put it in that hat!
+                  Throw it in!
                 </Button>
 
                 <Button
@@ -302,7 +288,7 @@ const Form = () => {
                     setList([]);
                   }}
                 >
-                  Empty that hat!
+                  Dump it out!
                 </Button>
 
                 <Button
@@ -312,10 +298,24 @@ const Form = () => {
                   className={classes.specialbutt}
                   onClick={() => setOpenThree(true)}
                 >
-                  Need help?
+                  Lost?
                 </Button>
               </div>
             </form>
+          </div>
+        </Grid>
+        <Grid item xs={false} sm={4} md={7} className={classes.image}>
+          <div className="Hat-box">
+            <div className="Hat-box-inner">
+              {
+                <img
+                  src={hat}
+                  className={hat === "./winterHat.png" ? "Winter-hat" : "Hat"}
+                  alt="logo"
+                  onClick={() => onDraw()}
+                />
+              }
+            </div>
           </div>
         </Grid>
         {showHatContents()}
