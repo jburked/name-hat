@@ -30,11 +30,12 @@ export enum Seasons {
 }
 
 export const getSeasonFromCurrentDate = (): Season => {
-  const winterMonths = [12, 1, 2];
-  const springMonths = [3, 4, 5];
-  const summerMonths = [6, 7, 8];
+  const winterMonths = [11, 0, 1];
+  const springMonths = [2, 3, 4];
+  const summerMonths = [5, 6, 7];
+  const fallMonths = [8, 9, 10];
 
-  const today = new Date().getUTCDate();
+  const today = new Date().getMonth();
 
   var currentSeason!: Season;
   if (winterMonths.includes(today)) currentSeason = Seasons.Winter;
