@@ -69,10 +69,10 @@ class FlipCoin extends Component {
         {/* Button to flip the coin */}
         <button onClick={this.handleClick}>Flip Me!</button>
 
-        <p>
+        <span>
           Out of {totalFlips} flips, there have been {heads} heads and{" "}
           {totalFlips - heads} tails
-        </p>
+        </span>
       </div>
     );
   }

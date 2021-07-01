@@ -108,6 +108,8 @@ const Form = () => {
     setOpenThree(false);
   };
 
+  const [coinDivClass, setCoinDivClass] = useState("");
+
   const onDraw = () => {
     const tempList = list.filter((ites) => ites.inTheMix !== false);
 
@@ -155,12 +157,14 @@ const Form = () => {
 
   const showHatContents = () => {
     if (
-      (list.length === 0 && localStorage.length > 0) ||
-      localStorage.length > list.length
+      list &&
+      localStorage &&
+      ((list.length === 0 && localStorage.length > 0) ||
+        localStorage.length > list.length)
     ) {
       setList(() => JSON.parse(localStorage.getItem("list")!));
     }
-    if (list.length >= 1) {
+    if (list && list.length >= 1) {
       return (
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <h4>What's in the hat?</h4>
@@ -212,8 +216,6 @@ const Form = () => {
       );
     }
   };
-
-  const [coinDivClass, setCoinDivClass] = useState("");
 
   return (
     <div>
@@ -358,11 +360,18 @@ const Form = () => {
               color="textPrimary"
             >
               <div>
-                Here is how Picky Hat works:
                 <ul>
                   <li>
-                    Add some things to Picky Hat. Names, restaurants, games,
-                    etc...
+                    Picky Hat is similar to a random name picker or a random
+                    number picker. Picky Hat is inspired by old fashioned random
+                    pickers like drawing names from a hat. Unlike most online
+                    random pickers, Hat wants more than just names or numbers...
+                  </li>
+                  <li>
+                    Having a hard time deciding where to eat tonight? Put in
+                    your favorite restuarants, let Hat decide. Endlessly
+                    scrolling through your streaming suggestions? Hat knows
+                    best...
                   </li>
                   <li>
                     Toggle switch to remove/add items you want to be picked.
@@ -380,7 +389,12 @@ const Form = () => {
                     </span>{" "}
                     choice
                   </li>
-                  <li>"Empty the Hat" to clear the hats contents.</li>
+                  <li>The red button will empty Hat.</li>
+                  <li>
+                    Your list will automatically be saved in your browsers
+                    storage. You can close your tab and/or browser without
+                    losing your list.
+                  </li>
                 </ul>
               </div>
             </DialogContentText>
