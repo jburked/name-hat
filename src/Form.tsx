@@ -362,8 +362,8 @@ const Form = () => {
               <div>
                 <ul>
                   <li>
-                    Picky Hat is similar to a random name picker or a random
-                    number picker. Picky Hat is inspired by old fashioned random
+                    Picky Hat is similar to a random name picker or a name
+                    picker wheel. Picky Hat is inspired by old fashioned random
                     pickers like drawing names from a hat. Unlike most online
                     random pickers, Hat wants more than just names or numbers...
                   </li>
