@@ -351,7 +351,7 @@ const Form = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">
+          <DialogTitle id="alert-dialog-title" style={{ alignSelf: "center" }}>
             {"Welcome to Picky Hat!"}
           </DialogTitle>
           <DialogContent>
@@ -362,20 +362,21 @@ const Form = () => {
               <div>
                 <ul>
                   <li>
-                    Picky Hat is similar to a random name picker or a name
-                    picker wheel. Picky Hat is inspired by old fashioned random
-                    pickers like drawing names from a hat. Unlike most online
-                    random pickers, Hat wants more than just names or numbers...
+                    Picky Hat is inspired by old fashioned drawing names from a
+                    hat. Unlike random{" "}
+                    <span
+                      style={{
+                        fontStyle: "italic",
+                      }}
+                    >
+                      name
+                    </span>{" "}
+                    pickers, wheels, etc... we let you decide what is randomly
+                    picked. Names, games, flames! *EXCLAIMS*
                   </li>
-                  <li>
-                    Having a hard time deciding where to eat tonight? Put in
-                    your favorite restuarants, let Hat decide. Endlessly
-                    scrolling through your streaming suggestions? Hat knows
-                    best...
-                  </li>
-                  <li>
-                    Toggle switch to remove/add items you want to be picked.
-                  </li>
+                  <li>Use the text box to add items to Picky Hat</li>
+                  <li>The green button adds an item to Hat</li>
+                  <li>The red button will empty Hat.</li>
                   <li>Hover over Picky Hat to shake it up.</li>
                   <li>
                     Click Picky Hat and it will pick the{" "}
@@ -389,17 +390,11 @@ const Form = () => {
                     </span>{" "}
                     choice
                   </li>
-                  <li>The red button will empty Hat.</li>
-                  <li>
-                    Your list will automatically be saved in your browsers
-                    storage. You can close your tab and/or browser without
-                    losing your list.
-                  </li>
                 </ul>
               </div>
             </DialogContentText>
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{ alignSelf: "center" }}>
             <Button onClick={handleCloseThree} color="primary" autoFocus>
               Got it!
             </Button>
