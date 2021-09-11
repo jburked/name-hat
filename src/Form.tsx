@@ -374,8 +374,8 @@ const Form = () => {
                     pickers, wheels, etc... we let you decide what is randomly
                     picked. Names, games, flames! *EXCLAIMS*
                   </li>
-                  <li>Use the text box to add items to Picky Hat</li>
-                  <li>The green button adds an item to Hat</li>
+                  <li>Use the text box to add items to Picky Hat.</li>
+                  <li>The green button adds an item to Hat.</li>
                   <li>The red button will empty Hat.</li>
                   <li>Hover over Picky Hat to shake it up.</li>
                   <li>
@@ -388,7 +388,7 @@ const Form = () => {
                     >
                       very best
                     </span>{" "}
-                    choice
+                    choice.
                   </li>
                 </ul>
               </div>
